@@ -1,0 +1,18 @@
+# AuthType       Basic
+# AuthName       "Administrator Only"
+# AuthUserFile   /home/xxxx/.htpasswd
+# require        valid-user
+
+DirectoryIndex index.html
+
+Header always append X-Frame-Options SAMEORIGIN
+Header always append X-XSS-Protection "1; mode=block"
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteRule ^ index.php [L]
+</IfModule>

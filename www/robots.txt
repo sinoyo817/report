@@ -1,0 +1,44 @@
+# Crawlerに対するアクセス頻度
+User-agent: Baiduspider
+Crawl-delay:120
+
+User-agent: Yetibot
+Crawl-delay:120
+
+User-agent: msnbot
+Crawl-delay: 10
+
+User-agent: bingbot
+Crawl-delay: 10
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: Y!J-ASR
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: Yandex
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# クロール禁止の指定
+User-agent: *
+Disallow: /qr.php
+Disallow: /icon.php
+Disallow: /thumb.php
+Disallow: /getImage.php
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /tmp/
+

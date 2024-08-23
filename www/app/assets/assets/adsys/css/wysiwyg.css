@@ -1,0 +1,436 @@
+/* --------------------------------------------------
+
+見出し
+
+-------------------------------------------------- */
+/* h1 */
+.wysiwyg h1 {
+    color: #333;
+    border-bottom: 5px solid #F0F0F0;
+    font-size: 3.4rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    padding: 0.5em 0;
+    margin-bottom: 1.5em;
+    position: relative;
+  }
+  .wysiwyg h1:first-child {
+    margin-top: 0;
+  }
+  .wysiwyg h1::after {
+    content: "";
+    background: #FCC100;
+    display: block;
+    width: 5em;
+    height: 5px;
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h1 {
+      font-size: 2.8rem;
+      font-size: 7.4666666667vmin;
+    }
+  }
+
+  .wysiwyg p + h1,
+  .wysiwyg ul + h1,
+  .wysiwyg ol + h1,
+  .wysiwyg table + h1,
+  .wysiwyg dl + h1 {
+    margin-top: 1em;
+  }
+
+  /* h2 */
+  .wysiwyg h2,
+  .post-sttl-large {
+    color: #333;
+    border-bottom: 5px solid #F0F0F0;
+    font-size: 3.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    padding: 0.5em 0;
+    margin-bottom: 1em;
+    position: relative;
+  }
+  .wysiwyg h2::after,
+  .post-sttl-large::after {
+    content: "";
+    background: #FCC100;
+    display: block;
+    width: 5em;
+    height: 5px;
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h2,
+  .post-sttl-large {
+      font-size: 2.4rem;
+      font-size: 6.4vmin;
+    }
+  }
+
+  /* h3 */
+  /* post-sttl-small */
+  .wysiwyg h3,
+  .post-sttl-small {
+    color: #333;
+    border-left: 6px solid #53E10A;
+    font-size: 2.7rem;
+    font-weight: 600;
+    padding: 0 0 0 1em;
+    margin: 1.5em 0;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h3,
+  .post-sttl-small {
+      font-size: 2.1rem;
+      font-size: 5.6vmin;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h3,
+  .post-sttl-small {
+      margin: 0 0 1em;
+    }
+  }
+
+  /* h4 */
+  .wysiwyg h4 {
+    background: #FFFBDA;
+    font-size: 2.4rem;
+    font-weight: 600;
+    padding: 0.5em 1em;
+    margin: 1.5em 0;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h4 {
+      font-size: 1.9rem;
+      font-size: 5.0666666667vmin;
+    }
+  }
+
+  /* h5 */
+  .wysiwyg h5 {
+    color: #333;
+    border-bottom: 1px solid #53E10A;
+    font-size: 2.2rem;
+    font-weight: 700;
+    padding: 0.5em 0;
+    margin: 1.5em 0;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h5 {
+      font-size: 1.8rem;
+      font-size: 4.8vmin;
+    }
+  }
+
+  /* h6 */
+  .wysiwyg h6 {
+    color: #333;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.5em 0;
+  }
+  @media only screen and (max-width: 768px) {
+    .wysiwyg h6 {
+      font-size: 1.7rem;
+      font-size: 4.5333333333vmin;
+    }
+  }
+
+  /* --------------------------------------------------
+
+wysiwyg
+
+-------------------------------------------------- */
+.wysiwyg {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 4%;
+    /* リンク<a> */
+    /* 段落 <p> */
+    /* 太字赤文字 <strong> */
+    /* 太字 <em> */
+    /* 斜体 <i> */
+    /* 下線 <u> */
+    /* 打ち消し線 <s> */
+    /* 下付き <sub> */
+    /* 上付き <sup> */
+    /* 順序のないリスト <ol> */
+    /*順序のないリスト <ul> */
+    /*定義リスト <dl> */
+    /* インデント <p class="txt-indent"> */
+    /* ブロック引用文 <blockquote> */
+    /* 中央揃え <p class="txt-center"> */
+    /* 右揃え <p class="txt-right"> */
+    /* 両端揃え <p class="txt-justify"> */
+    /* ハイパーリンク <a href=""> */
+    /* テーブル <table> */
+    /* フォントサイズ小 <span class="font-size-small"> */
+    /* フォントサイズ大 <span class="font-size-large"> */
+    /* 文字の間隔0.5em <span class="font-space-small"> */
+    /* 文字の間隔1.0em <span class="font-space-medium"> */
+    /* 文字の間隔1.5em <span class="font-space-large"> */
+    /* 文字の間隔2.0em <span class="font-space-xlarge"> */
+    /* アドレス */
+    /* 短い引用 */
+    /* 出典 */
+  }
+  .wysiwyg a:link,
+  .wysiwyg a:visited {
+    text-decoration: underline;
+  }
+  .wysiwyg p {
+    margin: 1em 0;
+  }
+  .wysiwyg strong {
+    color: #F00;
+    font-weight: bold;
+  }
+  .wysiwyg em {
+    font-weight: bold;
+  }
+  .wysiwyg i {
+    font-style: italic;
+  }
+  .wysiwyg .underline {
+    text-decoration: underline;
+  }
+  .wysiwyg .strike {
+    text-decoration: line-through;
+  }
+  .wysiwyg sub {
+    font-size: 0.8rem;
+    vertical-align: bottom;
+  }
+  .wysiwyg sup {
+    font-size: 0.8rem;
+    vertical-align: top;
+  }
+  .wysiwyg ol {
+    margin: 0.5em 0 1em;
+    list-style-position: inside;
+    list-style-type: decimal;
+    /*横並びリスト<ol> */
+  }
+  .wysiwyg ol > li {
+    text-indent: -1em;
+    padding-left: 1em;
+  }
+  .wysiwyg ol.horizontal-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .wysiwyg ol.horizontal-list li {
+    margin-right: 1.5em;
+  }
+  .wysiwyg ul {
+    margin: 0.5em 0 1em;
+    list-style-position: inside;
+    list-style-type: disc;
+    /*横並びリスト<ul> */
+  }
+  .wysiwyg ul > li {
+    text-indent: -1em;
+    padding-left: 1em;
+  }
+  .wysiwyg ul > li ul {
+    list-style-type: circle;
+  }
+  .wysiwyg ul.horizontal-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .wysiwyg ul.horizontal-list li {
+    margin-right: 1.5em;
+  }
+  .wysiwyg dl {
+    margin: 0.5em 0 1em;
+    /*横並び定義リスト <dl> */
+  }
+  .wysiwyg dl dt {
+    background: #EEE;
+    font-weight: 700;
+    display: inline-block;
+    padding: 0 0.5em;
+  }
+  .wysiwyg dl dd {
+    margin-bottom: 0.5em;
+  }
+  .wysiwyg dl.horizontal-list dt {
+    float: left;
+    margin-right: 0.5em;
+  }
+  .wysiwyg .txt-indent {
+    text-indent: 1em;
+  }
+  .wysiwyg blockquote {
+    background: #EEE;
+    font-style: italic;
+    padding: 1em 2em;
+    margin: 2em;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+  .wysiwyg blockquote p {
+    margin: 0;
+  }
+  .wysiwyg .txt-center {
+    text-align: center;
+  }
+  .wysiwyg .txt-right {
+    text-align: right;
+  }
+  .wysiwyg .txt-justify {
+    text-align: justify;
+  }
+  .wysiwyg a[href] {
+    color: #03F;
+    text-decoration: underline;
+  }
+  .wysiwyg table {
+    width: auto;
+    border-collapse: collapse;
+    border: 1px solid #DDD;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 1em 0 3em;
+  }
+  .wysiwyg table caption {
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 0.5em;
+  }
+  .wysiwyg table tr th {
+    color: #333;
+    background: #F0F0F0;
+    border: 1px solid #b2b2b2;
+    font-weight: bold;
+    padding: 0.5em;
+  }
+  .wysiwyg table tr td {
+    background: #FFFFFF;
+    border: 1px solid #b2b2b2;
+    padding: 0.5em;
+  }
+  .wysiwyg table .txt-justify {
+    -moz-text-align-last: justify;
+    text-align-last: justify;
+  }
+  .wysiwyg table.table-center {
+    margin: 0 auto 3em;
+  }
+  .wysiwyg table.table-center caption {
+    text-align: center;
+  }
+  .wysiwyg table.table-right {
+    margin-left: auto;
+  }
+  .wysiwyg table.table-left {
+    margin-right: auto;
+  }
+  .wysiwyg .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1em 0 2em;
+    max-width: none;
+  }
+  .wysiwyg .table-scroll::-webkit-scrollbar {
+    height: 5px;
+  }
+  .wysiwyg .table-scroll::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background: #eee;
+  }
+  .wysiwyg .table-scroll::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #CCC;
+  }
+  .wysiwyg .table-scroll table {
+    margin: 0;
+    max-width: none;
+  }
+  .wysiwyg .table-scroll table caption {
+    text-align: left;
+  }
+  @media only screen and (max-width: 420px) {
+    .wysiwyg .table-scroll table {
+      min-width: 100%;
+    }
+  }
+  .wysiwyg .font-size-small {
+    font-size: 0.6em;
+  }
+  .wysiwyg .font-size-large {
+    font-size: 1.75em;
+  }
+  .wysiwyg .font-space-small {
+    letter-spacing: 0.5em;
+    margin-left: 0.5em;
+  }
+  .wysiwyg .font-space-medium {
+    letter-spacing: 1em;
+    margin-left: 1em;
+  }
+  .wysiwyg .font-space-large {
+    letter-spacing: 1.5em;
+    margin-left: 1.5em;
+  }
+  .wysiwyg .font-space-xlarge {
+    letter-spacing: 2em;
+    margin-left: 2em;
+  }
+  .wysiwyg address {
+    padding: 1em 2em;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    font-style: italic;
+    background: #EEE;
+    margin: 0.5em 1em 2em;
+  }
+  .wysiwyg q:before {
+    content: '"';
+    display: inline-block;
+  }
+  .wysiwyg q:after {
+    content: '"';
+    display: inline-block;
+  }
+  .wysiwyg q:lang(ja):before {
+    content: "『";
+    display: inline-block;
+  }
+  .wysiwyg q:lang(ja):after {
+    content: "』";
+    display: inline-block;
+  }
+  .wysiwyg q q:before {
+    content: "'";
+    display: inline-block;
+  }
+  .wysiwyg q q:after {
+    content: "'";
+    display: inline-block;
+  }
+  .wysiwyg q q:lang(ja):before {
+    content: "「";
+    display: inline-block;
+  }
+  .wysiwyg q q:lang(ja):after {
+    content: "」";
+    display: inline-block;
+  }
+  .wysiwyg cite {
+    font-style: italic;
+    font-family: Times New Roman, "ＭＳ Ｐゴシック";
+  }

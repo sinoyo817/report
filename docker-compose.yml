@@ -1,0 +1,52 @@
+version: '3.4'
+services:
+  mysql:
+    build: docker/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE : my_app
+      MYSQL_USER : my_app
+      MYSQL_PASSWORD : secret
+    volumes:
+      - ./docker/db:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3306'
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=password
+      - PMA_HOSTS=mysql
+      - PMA_USER=my_app
+      - PMA_PASSWORD=secret
+    depends_on:
+      - mysql
+    volumes:
+      - ./docker/phpmyadmin/sessions:/sessions
+    ports:
+      - '80'
+  web:
+    build:
+      context: docker/web
+      args:
+        WEBROOT_HTTP: /home/medii/www
+        USERNAME: apache
+        USER_UID: "1000"
+        USER_GID: "1000"
+    hostname: medii.local.com
+    ports:
+      - '32780:80'
+      - '443'
+    volumes:
+      - ./:/home/medii/
+      # - ../../arachni-1.5.1-0.5.12:/home/arachni/
+    depends_on:
+      - mysql
+      - mail
+    extra_hosts:
+      - "search-api2.coara.or.jp:127.0.0.1"
+      - "search-api.coara.or.jp:127.0.0.1"
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - "8025"
