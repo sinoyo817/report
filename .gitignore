@@ -1,0 +1,81 @@
+# CakePHP specific files #
+##########################
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Tool specific files #
+#######################
+# vim
+*~
+*.swp
+*.swo
+# sublime text & textmate
+*.sublime-*
+*.stTheme.cache
+*.tmlanguage.cache
+*.tmPreferences.cache
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
+# Sass preprocessor
+.sass-cache/
+
+# Test URI
+# Ignore netbeans folder
+nbproject/*
+
+# MAC
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Dreamweaver
+_notes
+
+# Coara
+*.bak
+
+www/files/tmp/*
+!www/files/tmp/.gitkeep
+www/files/*
+!www/files/.htaccess
+www/app/files/*
+!www/app/files/.gitkeep
+
+tests/
+
+.env
+
+docker/db/*
+!docker/db/.gitkeep
+
+docker/phpmyadmin/sessions/*
+!docker/phpmyadmin/sessions/.gitkeep
+
+.htpasswd
+
+node_modules
+dist
+dist-mng
+
+filesystem_local.php
+site_local.php
+www/app/config/settings.json
+www/app/config/auth.json
+_list-archive.zip
+_list-archive/
