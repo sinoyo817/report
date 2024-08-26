@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Filter;
 
 use Search\Model\Filter\FilterCollection;
+
 class MasterProductCodesCollection extends FilterCollection
 {
     /**
@@ -26,18 +27,10 @@ class MasterProductCodesCollection extends FilterCollection
                     return $args;
                 }
             },
-            'fields' => [$table->aliasField("searchtext")]
+            'fields' => ['MasterEventCategories.searchtext']
         ]);
-        $this->like('title');
-            $this->like('code');
-            $this->like('can');
-            $this->value('sequence');
-            $this->like('status');
-            $this->like('public');
-            $this->value('created_by_admin');
-            $this->value('created_by_user');
-            $this->value('modified_by_admin');
-            $this->value('modified_by_user');
-            $this->value('cid');
-        }
+        $this->value('id');
+        $this->value('status');
+        $this->value('public');
+    }
 }

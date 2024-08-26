@@ -24,6 +24,7 @@ class MasterEventCategoriesCollection extends FilterCollection
                 'fields' => ['MasterEventCategories.title']
             ]);
         $this->value('id');
+        $this->value('title');
         $this->value('status');
         $this->value('public');
     }

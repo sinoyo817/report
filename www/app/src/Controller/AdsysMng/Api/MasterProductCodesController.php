@@ -1,17 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Adsys\Api;
+namespace App\Controller\AdsysMng\Api;
 
 use App\Controller\AppController;
-use App\Model\Entity\MasterProductCode;
-use Cake\ORM\Query;
-use ArrayObject;
-use Cake\Chronos\Chronos;
-use Cake\Core\Configure;
-use Cake\Datasource\EntityInterface;
-use Cake\Event\EventInterface;
-use Cake\Log\Log;
 use Medii\Crud\Interfaces\ConfirmInterface;
 use Medii\Crud\Interfaces\CreateInterface;
 use Medii\Crud\Interfaces\PreviewInterface;
@@ -33,6 +25,12 @@ class MasterProductCodesController extends AppController
         'limit' => 20,
     ];
 
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('AdminUtility');
+    }
+
     /**
      * Index method
      *
@@ -41,8 +39,8 @@ class MasterProductCodesController extends AppController
      */
     public function index(SearchInterface $search)
     {
-        $associated = [];
-        $search->setfindOptions(['contain' => $associated]);
+        // $associated = [];
+        // $search->setfindOptions(['contain' => $associated]);
         $this->set('data', $search->search($this));
     }
 

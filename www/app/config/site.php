@@ -23,6 +23,7 @@ return [
                 "bunnersKey" => "Bunners",
                 // "contactsKey" => "Contacts",
                 "adminsKey" => "Admins",
+                "masterProductCodesKey" => "MasterProductCodes",
                 "masterTopicCategoriesKey" => "MasterTopicCategories",
                 "masterEventCategoriesKey" => "MasterEventCategories",
                 "masterContactCategoriesKey" => "MasterContactCategories",
@@ -35,6 +36,7 @@ return [
                 // "Bunners" => "バナー",
                 // "Contacts" => "お問い合わせ",
                 "Admins" => "管理者",
+                "MasterProductCodes" => "予算コード",
                 // "MasterTopicCategories" => "お知らせカテゴリ",
                 // "MasterEventCategories" => "観光地・イベントカテゴリ",
                 // "MasterContactCategories" => "お問い合わせカテゴリ",
@@ -49,6 +51,7 @@ return [
                     // "Contacts",
                 ],
                 "masterSetting" => [
+                    "MasterProductCodes",
                     "MasterTopicCategories",
                     "MasterEventCategories",
                     "MasterContactCategories",
