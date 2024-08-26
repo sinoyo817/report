@@ -1,3 +1,4 @@
+import { AdminType } from "@/features/admins";
 import {
     BaseBlockEntityType,
     BaseEntityType,
@@ -20,6 +21,10 @@ export type MasterProductCodeType = {
     start_date: string;
     end_date: string;
     sequence: number;
+    create_admin?: AdminType;
+    create_user?: AdminType;
+    modified_admin?: AdminType;
+    modified_user?: AdminType;
 } & BaseEntityType;
 
 export type MasterProductCodeListType = {

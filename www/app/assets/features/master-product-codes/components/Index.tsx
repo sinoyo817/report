@@ -134,32 +134,51 @@ const Index = () => {
                        />
                    );
                },
-               header: () => <span>タイトル</span>,
+               header: () => <span>予算コード</span>,
                // footer: (info) => info.column.id,
            }) as ColumnDef<MasterProductCodeType>
-       );
-       commonColumn.push(
-          columnHelper.accessor("can", {
-              id: "can",
-              cell: ({ row }) => {
-                  const onSubmit = async (nextValue: string) => {
-                      await updateMutation.mutateAsync({
-                          data: { ...row.original, can: nextValue },
-                          id: row.original.id,
-                      });
-                  };
+        );
+        commonColumn.push(
+            columnHelper.accessor("can", {
+                id: "can",
+                cell: ({ row }) => {
+                    const onSubmit = async (nextValue: string) => {
+                        await updateMutation.mutateAsync({
+                            data: { ...row.original, can: nextValue },
+                            id: row.original.id,
+                        });
+                    };
 
-                  return (
-                      <EditableCell
-                          field={row.original.can}
-                          onSubmit={onSubmit}
-                      />
-                  );
-              },
-              header: () => <span>タイトル</span>,
-              // footer: (info) => info.column.id,
-          }) as ColumnDef<MasterProductCodeType>
-      );
+                    return (
+                        <EditableCell
+                            field={row.original.can}
+                            onSubmit={onSubmit}
+                        />
+                    );
+                },
+                header: () => <span>CANコード</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<MasterProductCodeType>
+        );
+        commonColumn.push(
+            columnHelper.accessor("create_admin", {
+                id: "create_admin",
+                cell: (info) => {
+                    const isForegin = info.row.original.locale !== undefined;
+
+                    if (isForegin) {
+                        return "-";
+                    }
+
+                    const data = info.getValue();
+                    if (data) {
+                        return <>{data.title}</>;
+                    }
+                },
+                header: () => <span>作成者</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<MasterProductCodeType>
+        );
         commonColumn.push(
             columnHelper.accessor("public", {
                 id: "public",

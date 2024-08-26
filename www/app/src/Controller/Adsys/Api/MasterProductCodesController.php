@@ -41,7 +41,7 @@ class MasterProductCodesController extends AppController
      */
     public function index(SearchInterface $search)
     {
-        $associated = [];
+        $associated = ['CreateAdmins', 'ModifiedAdmins'];
         $search->setfindOptions(['contain' => $associated]);
         $this->set('data', $search->search($this));
     }
