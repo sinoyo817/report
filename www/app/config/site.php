@@ -24,6 +24,7 @@ return [
                 // "contactsKey" => "Contacts",
                 "adminsKey" => "Admins",
                 "masterProductCodesKey" => "MasterProductCodes",
+                "masterWorkCodesKey" => "MasterWorkCodes",
                 "masterTopicCategoriesKey" => "MasterTopicCategories",
                 "masterEventCategoriesKey" => "MasterEventCategories",
                 "masterContactCategoriesKey" => "MasterContactCategories",
@@ -37,6 +38,7 @@ return [
                 // "Contacts" => "お問い合わせ",
                 "Admins" => "管理者",
                 "MasterProductCodes" => "予算コード",
+                "MasterWorkCodes" => "作業内容",
                 // "MasterTopicCategories" => "お知らせカテゴリ",
                 // "MasterEventCategories" => "観光地・イベントカテゴリ",
                 // "MasterContactCategories" => "お問い合わせカテゴリ",
@@ -52,6 +54,7 @@ return [
                 ],
                 "masterSetting" => [
                     "MasterProductCodes",
+                    "MasterWorkCodes",
                     "MasterTopicCategories",
                     "MasterEventCategories",
                     "MasterContactCategories",
