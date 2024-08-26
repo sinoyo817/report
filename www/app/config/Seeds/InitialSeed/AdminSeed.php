@@ -28,11 +28,13 @@ class AdminSeed extends AbstractSeed
             [
                 'id' => 'da4fdc4b-f707-4b76-a76d-e784094376c1',
                 'title' => '総合管理者',
+                'code' => null,
                 'username' => 'admin',
                 'password' => $hasher->hash('xxxx'),
                 'note' => 'admin / xxxx',
                 'role' => 'Admin',
                 'email' => 'xxxx',
+                'signature' => null,
                 'status' => 'published',
                 'public' => 'published',
                 'created' => '2018-07-10 14:49:03',

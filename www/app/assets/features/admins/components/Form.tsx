@@ -121,7 +121,22 @@ const Form = (props: FormPropType) => {
                 formControlOptions={{ isRequired: true }}
                 rule={{ required: "名前を入力してください" }}
             />
-            
+            <BaseInputField<AdminFormValuesType>
+                id="code"
+                formType="input"
+                label="社員番号"
+                model={model}
+                isConfirm={isConfirm}
+                placeholder="社員番号を入力してください"
+            />
+            <BaseTextField<AdminFormValuesType>
+                id="signature"
+                formType="textarea"
+                model={model}
+                isConfirm={isConfirm}
+                label="日報の署名"
+                placeholder="日報の署名を入力してください"
+            />
             <BaseTextField<AdminFormValuesType>
                 id="note"
                 formType="textarea"

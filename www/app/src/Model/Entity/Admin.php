@@ -40,6 +40,7 @@ class Admin extends AppEntity
      */
     protected $_accessible = [
         'title' => true,
+        'code' => true,
         'username' => true,
         'password' => true,
         'password_new' => true,
@@ -47,6 +48,7 @@ class Admin extends AppEntity
         'note' => true,
         'role' => true,
         'email' => true,
+        'signature' => true,
         'status' => true,
         'public' => true,
         'created' => true,

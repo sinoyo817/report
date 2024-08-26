@@ -26,6 +26,12 @@ class Initial extends AbstractMigration
                 'limit' => 255,
                 'null' => false,
             ])
+            ->addColumn('code', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+                'comment' => '社員番号',
+            ])
             ->addColumn('username', 'string', [
                 'default' => null,
                 'limit' => 255,
@@ -38,8 +44,8 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('note', 'text', [
                 'default' => null,
-                'limit' => 50,
-                'null' => false,
+                'limit' => 4294967295,
+                'null' => true,
             ])
             ->addColumn('role', 'string', [
                 'default' => null,
@@ -50,6 +56,12 @@ class Initial extends AbstractMigration
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
+            ])
+            ->addColumn('signature', 'text', [
+                'default' => null,
+                'limit' => 4294967295,
+                'null' => true,
+                'comment' => '日報の署名',
             ])
             ->addColumn('status', 'string', [
                 'default' => 'unpublished',

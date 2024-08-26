@@ -10,9 +10,11 @@ import {
 
 export type AdminType = {
     title: string;
+    code?: string;
     username: string;
     email: string;
     note?: string;
+    signature?: string;
     role: AuthRoleType;
 } & BaseEntityType;
 
