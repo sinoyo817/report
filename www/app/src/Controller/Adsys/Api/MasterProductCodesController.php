@@ -33,6 +33,14 @@ class MasterProductCodesController extends AppController
         'limit' => 20,
     ];
 
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        // Authenticationコンポーネントをロード
+        $this->loadComponent('Authentication.Authentication');
+    }
+
     /**
      * Index method
      *
@@ -42,7 +50,27 @@ class MasterProductCodesController extends AppController
     public function index(SearchInterface $search)
     {
         $associated = ['CreateAdmins', 'ModifiedAdmins'];
-        $search->setfindOptions(['contain' => $associated]);
+        $conditions = [];
+
+        // ログインしているユーザーのIDを取得
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $identity = $this->request->getAttribute('identity');
+            $superuser = $identity->get('superuser');
+
+            // スーパーユーザーじゃなければスーパーユーザーが登録したものと自分が登録したものだけ
+            if (!$superuser) {
+                $userId = [Configure::read('Master.SuperUserId')];
+                $userId[] = $identity->getIdentifier();
+                $conditions = ['MasterProductCodes.created_by_admin IN ' => $userId];
+            }
+        }
+
+        // $search->setfindOptions(['contain' => $associated]);
+        $search->setfindOptions([
+            'contain' => $associated,
+            'conditions' => $conditions
+        ]);
         $this->set('data', $search->search($this));
     }
 

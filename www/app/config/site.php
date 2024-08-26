@@ -30,18 +30,18 @@ return [
                 "masterContactCategoriesKey" => "MasterContactCategories",
             ],
             "ContentsList" => [
-                "Topics" => "お知らせ",
+                // "Topics" => "お知らせ",
                 // "Events" => "イベント",
                 // "Freepages" => "フリーページ",
                 // "TopImages" => "TOPイメージ",
                 // "Bunners" => "バナー",
                 // "Contacts" => "お問い合わせ",
-                "Admins" => "管理者",
                 "MasterProductCodes" => "予算コード",
                 "MasterWorkCodes" => "作業内容",
                 // "MasterTopicCategories" => "お知らせカテゴリ",
                 // "MasterEventCategories" => "観光地・イベントカテゴリ",
                 // "MasterContactCategories" => "お問い合わせカテゴリ",
+                "Admins" => "管理者",
             ],
             "MenuList" => [
                 "updates" => [

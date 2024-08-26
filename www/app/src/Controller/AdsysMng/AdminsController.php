@@ -189,11 +189,11 @@ class AdminsController extends AppController
                         'to' => './master-work-codes',
                         'key' => 'master-work-codes',
                     ],
-                    [
-                        'name' => __('お知らせカテゴリ'),
-                        'to' => './master-topic-categories',
-                        'key' => 'master-topic-categories',
-                    ],
+                    // [
+                    //     'name' => __('お知らせカテゴリ'),
+                    //     'to' => './master-topic-categories',
+                    //     'key' => 'master-topic-categories',
+                    // ],
                     // [
                     //     'name' => __('エリア'),
                     //     'to' => './master-areas',

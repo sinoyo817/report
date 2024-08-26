@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Model\Filter;
+use Cake\ORM\TableRegistry;
 
 use Search\Model\Filter\FilterCollection;
 
@@ -12,6 +13,10 @@ class MasterProductCodesCollection extends FilterCollection
      */
     public function initialize(): void
     {
+
+        $alias = $this->_manager->getRepository()->getAlias();
+        $table = TableRegistry::getTableLocator()->get($alias);
+
         $this->add('q', 'Search.Like', [
             'before' => true,
             'after' => true,
@@ -27,10 +32,12 @@ class MasterProductCodesCollection extends FilterCollection
                     return $args;
                 }
             },
-            'fields' => ['MasterEventCategories.searchtext']
+            'fields' => [$table->aliasField("searchtext")]
         ]);
         $this->value('id');
         $this->value('status');
         $this->value('public');
+        // 追加: created_by_admin フィールドのフィルタリング
+        $this->value('created_by_admin');
     }
 }
