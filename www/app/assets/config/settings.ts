@@ -161,4 +161,13 @@ export const blockFields: BlockFieldsType = {
             },
         },
     ],
+    works: [
+        {
+            title: "予算コード",
+            defaultValues: {
+                type: "work",
+                value01: "",
+            },
+        },
+    ],
 };

@@ -16,6 +16,7 @@ return [
                 'authAccount' => 'アカウント管理',
             ],
             "ContentsKey" => [
+                "dayWorksKey" => "DayWorks",
                 "topicsKey" => "Topics",
                 "eventsKey" => "Events",
                 "freepagesKey" => "Freepages",
@@ -30,6 +31,7 @@ return [
                 "masterContactCategoriesKey" => "MasterContactCategories",
             ],
             "ContentsList" => [
+                "DayWorks" => "工数",
                 // "Topics" => "お知らせ",
                 // "Events" => "イベント",
                 // "Freepages" => "フリーページ",
@@ -45,6 +47,7 @@ return [
             ],
             "MenuList" => [
                 "updates" => [
+                    "DayWorks",
                     "Topics",
                     "Events",
                     "Freepages",

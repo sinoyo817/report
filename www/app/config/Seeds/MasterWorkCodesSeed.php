@@ -63,5 +63,22 @@ class MasterWorkCodesSeed extends AbstractSeed
         $table->insert($data)->save();
         $table = $this->table('master_work_codes_private');
         $table->insert($data)->save();
+
+        $data = [
+            'id' => Text::uuid(),
+            'title' => 'グループミーティング等、案件に係らない打合せ用',
+            'code' => '9240109',
+            'can' => null,
+            'sequence' => 1,
+            'status' => 'published',
+            'public' => 'published',
+            'created_by_admin' => 'da4fdc4b-f707-4b76-a76d-e784094376c1',
+            'modified_by_admin' => 'da4fdc4b-f707-4b76-a76d-e784094376c1',
+        ];
+
+        $table = $this->table('master_product_codes');
+        $table->insert($data)->save();
+        $table = $this->table('master_product_codes_private');
+        $table->insert($data)->save();
     }
 }

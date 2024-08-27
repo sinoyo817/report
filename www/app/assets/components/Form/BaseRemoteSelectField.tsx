@@ -123,7 +123,7 @@ export const BaseRemoteSelectField = <T extends FieldValues>(
             ref={ref}
             value={value}
             placeholder={placeholder}
-            w="72"
+            w="100%"
             isRequired={false}
             {...selectOptions}
         >

@@ -11,6 +11,7 @@ import { Image } from "./Block/Image";
 import { File } from "./Block/File";
 import { ImageTwo } from "./Block/ImageTwo";
 import { ImageText } from "./Block/ImageText";
+import { Work } from "./Block/Work";
 
 type SelectBlockFieldProps<S extends BaseBlockEntityType> =
     CommonFieldOptionType & {
@@ -46,6 +47,8 @@ export const SelectBlockField = <S extends BaseBlockEntityType>(
                 return <Wysiwyg {...props} />;
             case "iframe":
                 return <Iframe {...props} />;
+            case "work":
+                return <Work {...props} />;
             default:
                 return <></>;
         }
