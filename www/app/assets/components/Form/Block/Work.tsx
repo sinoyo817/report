@@ -23,7 +23,7 @@ export const Work = <S extends BaseBlockEntityType>(
         // <Box color="black">
             <Wrap>
                 <HStack justify="center" spacing={4} alignItems="flex-end">
-                    <Box width="45%">
+                    <Box width="150">
                         {meta && (
                             <BaseRemoteSelectField
                                 id={`${id}.${index}.value01`}
@@ -46,7 +46,7 @@ export const Work = <S extends BaseBlockEntityType>(
                             />
                         )}
                     </Box>
-                    <Box width="35%">
+                    <Box width="100">
                     {meta && (
                         <BaseRemoteSelectField
                             id={`${id}.${index}.value02`}
@@ -69,7 +69,7 @@ export const Work = <S extends BaseBlockEntityType>(
                         />
                     )}
                     </Box>
-                    <Box width="10%">
+                    <Box width="50">
                         <BaseInputField
                             id={`${id}.${index}.value04`}
                             formType="input"
@@ -84,7 +84,7 @@ export const Work = <S extends BaseBlockEntityType>(
                             locale={locale}
                         />
                     </Box>
-                    <Box width="10%">
+                    <Box width="40">
                         <BaseCheckboxField
                             id={`${id}.${index}.value05`}
                             formType="checkbox"
