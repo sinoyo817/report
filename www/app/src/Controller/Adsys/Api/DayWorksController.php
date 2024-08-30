@@ -23,6 +23,8 @@ use Cake\Http\CallbackStream;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv as WriterCsv;
 
+use Cake\Collection\Collection;
+
 /**
  * DayWorks Controller
  *
@@ -246,5 +248,190 @@ class DayWorksController extends AppController
         }
 
         return $this->redirect(['controller' => 'DayWorks' , 'action' => 'index', 'prefix' => 'Adsys']);
+    }
+    /**
+     * csvDownload method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function csvDownload()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $this->setCsvData($spreadsheet);
+
+        // $writer = new Xlsx($spreadsheet);
+
+        $writer = new WriterCsv($spreadsheet);
+        $writer->setUseBOM(false);
+        $writer->setOutputEncoding('SJIS-WIN');
+        $writer->setEnclosure('"');
+
+        // Save the file in a stream
+        $stream = new CallbackStream(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+
+        $filename = 'Reports_' . date('YmdHis');
+        $response = $this->response;
+
+        // Return the stream in a response
+        return $response->withType('csv')
+            ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.csv\"")
+            ->withBody($stream);
+    }
+
+    /**
+     * setCsvData function
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
+     * @return void
+     */
+    private function setCsvData($spreadsheet)
+    {
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->fromArray($this->_getHeaderCell(), null, 'A1', true);
+        $this->_getBodyCell($sheet);
+        // $sheet->fromArray($this->_getBodyCell(), null, 'A2', true);
+    }
+
+    private function _getHeaderCell()
+    {
+        $header = [];
+
+        foreach (range('A', 'E') as $col) {
+            $header[] = $this->_getCellData($col, true);
+        }
+
+        return $header;
+    }
+
+    /**
+     * _getBodyCell function
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet
+     * @return void
+     */
+    private function _getBodyCell($sheet)
+    {
+
+        $role = $this->Authentication->getIdentityData('role');
+        $roleData = Configure::read("Roles." . $role) ?? [];
+
+        if (!$roleData) {
+            return;
+        }
+        $statusOptionKey = $roleData['statusOptions']['day-works'] ?? $roleData['statusOptions']['default'];
+        $statusOption = Configure::read("Approvals.allStatusOption." . $statusOptionKey);
+        $statusOption = Hash::combine($statusOption, '{n}.status', '{n}.title');
+
+        $associated = [
+            'Blocks',
+            'CreateAdmins',
+        ];
+
+        $table = $this->fetchTable();
+        $query = $this->Authorization->applyScope($table->find('search', [
+            'search' => $this->request->getQueryParams(),
+            'collection' => DayWorksCollection::class
+        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+
+        /** @var \App\Model\Entity\DayWorks[] $data  */
+        $data = $query->all()->toArray();
+
+        if ($data) {
+            // ブロックのデータを集計して配列を作成
+            $reports = [];
+            $total = 0;
+            foreach ($data as $d) {
+                if (!empty($d->blocks)) {
+
+                    foreach ($d->blocks as $block) {
+                        // 合計値用の計算をしておく
+                        $total = (double) $total + (double) $block->value04;
+
+                        if (array_key_exists($block->value01, $reports) && array_key_exists($block->value02, $reports[$block->value01])) {
+                            // 同じ案件＆同じ作業コードのものが計上済みなら加算
+                            $sum = ((double) $reports[$block->value01][$block->value02]['time'] + (double) $block->value04);
+                            $reports[$block->value01][$block->value02] = [
+                                'product_code' => $block->value01,
+                                'work_code' => $block->value02,
+                                'time' => $sum,
+                            ];
+                        } else {
+                            $reports[$block->value01][$block->value02] = [
+                                'product_code' => $block->value01,
+                                'work_code' => $block->value02,
+                                'time' => $block->value04,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            $ProductCodes = $this->fetchTable('MasterProductCodes')->find()->toArray();
+            $WorkCodes = $this->fetchTable('MasterWorkCodes')->find()->toArray();
+
+            $index = 2;
+            foreach ($reports as $report) {
+                foreach ($report as $rep) {
+                    $product = Hash::extract($ProductCodes, "{n}[id={$rep['product_code']}]");
+                    $product = Hash::get($product, '0');
+                    $work = Hash::extract($WorkCodes, "{n}[id={$rep['work_code']}]");
+                    $work = Hash::get($work, '0');
+
+                    foreach (range('A', 'E') as $col) {
+                        
+                        if ($col === 'A') {
+                            $sheet->setCellValue("{$col}{$index}", $product ? $product->code : "");
+                        } elseif ($col === 'B') {
+                            $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
+                        } elseif ($col === 'C') {
+                            $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
+                        } elseif ($col === 'D') {
+                            $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
+                        } elseif ($col === 'E') {
+                            $text = ""; 
+                            if (!empty($product)) {
+                                $text = $product->can ? "{$product->can} : {$product->title}" : $product->title;
+                            }
+                            $sheet->setCellValue("{$col}{$index}", $text);
+                        }
+                    }
+
+                    $index++;
+                }
+            }
+            // 最終行にトータルを入れる
+            $sheet->setCellValue("D{$index}", $total);
+            // exit;
+        }
+    }
+
+    protected function _getCellData($col, $isHeader = false,)
+    {
+        $ret = null;
+        switch ($col) {
+            case "A":
+                $ret = $isHeader ? '予算コード' : null;
+                break;
+            case "B":
+                $ret = $isHeader ? '案件名' : null;
+                break;
+            case "C":
+                $ret = $isHeader ? '作業内容' : null;
+                break;
+            case "D":
+                $ret = $isHeader ? '工数' : null;
+                break;
+            case "E":
+                $ret = $isHeader ? '備考' : null;
+                break;
+        }
+
+        return $ret;
     }
 }
