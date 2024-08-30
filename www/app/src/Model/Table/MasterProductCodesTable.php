@@ -57,6 +57,7 @@ class MasterProductCodesTable extends AppTable
 
         $this->addBehavior('ADmad/Sequence.Sequence', [
             'sequenceField' => 'sequence',
+            'scope' => ['created_by_admin'], 
         ]);
 
         $fileFields = [];
