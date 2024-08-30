@@ -77,6 +77,10 @@ export const Work = <S extends BaseBlockEntityType>(
                             formControlOptions={{ isRequired: true }}
                             rule={{
                                 required: "作業時間を入力してください",
+                                pattern: {
+                                    value: /^[0-9]+$/,
+                                    message: "半角数字のみを入力してください",
+                                },
                             }}
                             placeholder={""}
                             isConfirm={isConfirm}

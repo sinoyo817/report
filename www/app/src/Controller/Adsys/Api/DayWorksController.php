@@ -272,8 +272,16 @@ class DayWorksController extends AppController
             $writer->save('php://output');
         });
 
+        $start_date = $this->request->getQueryParams()['start_date'] ?? "";
+        $end_date = $this->request->getQueryParams()['end_date'] ?? "";
 
-        $filename = 'Reports_' . date('YmdHis');
+        if (!empty($start_date) || !empty($end_date)) {            
+            $period = [$start_date, $end_date];
+            $filename = implode(' ～ ', $period) . '日報_' . date('YmdHis');
+        } else {
+            $filename = '日報_' . date('YmdHis');
+        }
+
         $response = $this->response;
 
         // Return the stream in a response
@@ -324,9 +332,9 @@ class DayWorksController extends AppController
         if (!$roleData) {
             return;
         }
-        $statusOptionKey = $roleData['statusOptions']['day-works'] ?? $roleData['statusOptions']['default'];
-        $statusOption = Configure::read("Approvals.allStatusOption." . $statusOptionKey);
-        $statusOption = Hash::combine($statusOption, '{n}.status', '{n}.title');
+        // $statusOptionKey = $roleData['statusOptions']['day-works'] ?? $roleData['statusOptions']['default'];
+        // $statusOption = Configure::read("Approvals.allStatusOption." . $statusOptionKey);
+        // $statusOption = Hash::combine($statusOption, '{n}.status', '{n}.title');
 
         $associated = [
             'Blocks',
