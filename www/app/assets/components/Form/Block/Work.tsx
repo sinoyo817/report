@@ -71,15 +71,15 @@ export const Work = <S extends BaseBlockEntityType>(
                     </Box>
                     <Box width="50">
                         <BaseInputField
-                            id={`${id}.${index}.value04`}
+                            id={`${id}.${index}.value03`}
                             formType="input"
                             label="作業時間"
                             formControlOptions={{ isRequired: true }}
                             rule={{
                                 required: "作業時間を入力してください",
                                 pattern: {
-                                    value: /^[0-9]+$/,
-                                    message: "半角数字のみを入力してください",
+                                    value: /^[0-9]*\.?[0-9]+$/,
+                                    message: "半角数字および浮動小数点数のみを入力してください",
                                 },
                             }}
                             placeholder={""}
@@ -90,7 +90,7 @@ export const Work = <S extends BaseBlockEntityType>(
                     </Box>
                     <Box width="40">
                         <BaseCheckboxField
-                            id={`${id}.${index}.value05`}
+                            id={`${id}.${index}.value04`}
                             formType="checkbox"
                             defaultValue="0"
                             checkboxValueOption={{ label: "日報に記載", value: 1 }}

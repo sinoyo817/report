@@ -15,11 +15,8 @@ import {
 import {
     ColumnDef,
     createColumnHelper,
-    
     getCoreRowModel,
-    
     getFilteredRowModel,
-    
     useReactTable,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -43,7 +40,7 @@ import { useDayWorkMeta } from "../api/getDayWorkMeta";
 import { useUpdateDayWork } from "../api/updateDayWork";
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { DndTable } from "@/components/elements/Table/DndTable";
-import { BaseBlockEntityType } from "@/types";
+import { BaseBlockEntityType, BaseSelectOptions } from "@/types";
 
 
 const Index = () => {
@@ -88,6 +85,64 @@ const Index = () => {
                     );
                 },
                 header: () => <span>タイトル</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<DayWorkType>
+        );
+        commonColumn.push(
+            columnHelper.accessor("start_time", {
+                id: "start_time",
+                cell: (info) => {
+                    return ( info.getValue());
+                },
+                header: () => <span>開始時間</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<DayWorkType>
+        );
+        commonColumn.push(
+            columnHelper.accessor("end_time", {
+                id: "end_time",
+                cell: (info) => {
+                    return ( info.getValue() );
+                },
+                header: () => <span>終了時間</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<DayWorkType>
+        );
+        // commonColumn.push(
+        //     columnHelper.accessor("send_text", {
+        //         id: "send_text",
+        //         cell: (info) => {
+        //             const blocks = info.row.original.blocks;
+        //             if (meta && meta.master_product_codes) {
+        //                 const text = allText(
+        //                     blocks,
+        //                     meta.master_product_codes,
+        //                 );
+        //                 return <pre style={{ textAlign: 'left', margin: 0 }}>{text}</pre>;
+        //                 // return allText(
+        //                 //     blocks,
+        //                 //     meta.master_product_codes,
+        //                 // );
+        //             }
+        //         },
+        //         header: () => <span>作業</span>,
+        //         // footer: (info) => info.column.id,
+        //     }) as ColumnDef<DayWorkType>
+        // );
+        commonColumn.push(
+            columnHelper.accessor("send_text", {
+                id: "send_text",
+                cell: (info) => {
+                    const blocks = info.row.original.blocks;
+                    if (meta && meta.master_product_codes) {
+                        const text = sendText(
+                            blocks,
+                            meta.master_product_codes,
+                        );
+                        return <pre style={{ textAlign: 'left', margin: 0 }}>{text}</pre>;
+                    }
+                },
+                header: () => <span>日報記載作業</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<DayWorkType>
         );
@@ -173,17 +228,6 @@ const Index = () => {
                 // footer: (info) => info.column.id,
             }) as ColumnDef<DayWorkType>
         );
-        commonColumn.push(
-            columnHelper.accessor("public", {
-                id: "public",
-                cell: (info) => {
-                    const data = info.getValue();
-                    return <StatusCell status={data} />;
-                },
-                header: () => <span>公開状態</span>,
-                // footer: (info) => info.column.id,
-            }) as ColumnDef<DayWorkType>
-        );
 
          if (isDnd) {
             return commonColumn;
@@ -192,12 +236,54 @@ const Index = () => {
         return [TableCheckbox<DayWorkType>(columnHelper), ...commonColumn];
     }, [isDnd,meta,data]);
     
-    // ブロックvalue04の合計を算出
+    // // 全ての作業
+    // const allText = (blocks: BaseBlockEntityType[], masterProductCodes: BaseSelectOptions[]) => {
+
+    //     // master_product_codesをキーと値のペアに変換
+    //     const productCodeMap = masterProductCodes.reduce((acc, code) => {
+    //         acc[code.id] = code.title;
+    //         return acc;
+    //     }, {} as Record<string, string>);
+
+    //     const textArray = blocks.map(block => {
+    //         const value01 = block.value01;
+    //         if (value01) {
+    //             return productCodeMap[value01] || '';
+    //         }
+    //     }).filter(Boolean);
+    
+    //     return textArray.join("\n");
+    // };
+    
+    // 日報に記載するテキスト
+    const sendText = (blocks: BaseBlockEntityType[], masterProductCodes: BaseSelectOptions[]) => {
+
+        // master_product_codesをキーと値のペアに変換
+        const productCodeMap = masterProductCodes.reduce((acc, code) => {
+            acc[code.id] = code.title;
+            return acc;
+        }, {} as Record<string, string>);
+
+        const seen = new Set(); // 重複確認
+        const textArray = blocks.map(block => {
+            if (block.value04 == '1') {
+                const value01 = block.value01;
+                if (value01 && !seen.has(value01)) {
+                    seen.add(value01);
+                    return productCodeMap[value01] || '';
+                }
+            }
+        }).filter(Boolean);
+    
+        return textArray.join("\n");
+    };
+    
+    // ブロックvalue03の合計を算出
     const calculateTotal = (blocks: BaseBlockEntityType[]) => {
         return blocks.reduce((sum, block) => {
-            const value04 = block.value04;
-            if (typeof value04 === 'string') {
-                return sum + (parseFloat(value04) || 0);
+            const value03 = block.value03;
+            if (typeof value03 === 'string') {
+                return sum + (parseFloat(value03) || 0);
             }
             return sum;
         }, 0);
@@ -209,9 +295,9 @@ const Index = () => {
         return parseFloat(data.reduce((allSum, item) => {
             const blocks = item.blocks || [];
             return allSum + blocks.reduce((sum, block) => {
-                const value04 = block.value04;
-                if (typeof value04 === 'string') {
-                    return sum + (parseFloat(value04) || 0);
+                const value03 = block.value03;
+                if (typeof value03 === 'string') {
+                    return sum + (parseFloat(value03) || 0);
                 }
                 return sum;
             }, 0);

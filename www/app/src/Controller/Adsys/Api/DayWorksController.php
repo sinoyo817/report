@@ -38,6 +38,7 @@ class DayWorksController extends AppController
     public $paginate = [
         'limit' => 20,
         'order' => [
+            'DayWorks.work_date' => 'DESC',
             'DayWorks.created' => 'DESC',
             'DayWorks.modified' => 'DESC',
         ],
@@ -231,7 +232,7 @@ class DayWorksController extends AppController
 
         $associated = [
             'Blocks' => function (Query $q) {
-                return $q->where(['value05' => '1'])->distinct('value01');
+                return $q->where(['value04' => '1'])->distinct('value01');
             },
             'CreateAdmins'
         ];
@@ -332,9 +333,6 @@ class DayWorksController extends AppController
         if (!$roleData) {
             return;
         }
-        // $statusOptionKey = $roleData['statusOptions']['day-works'] ?? $roleData['statusOptions']['default'];
-        // $statusOption = Configure::read("Approvals.allStatusOption." . $statusOptionKey);
-        // $statusOption = Hash::combine($statusOption, '{n}.status', '{n}.title');
 
         $associated = [
             'Blocks',
@@ -353,17 +351,21 @@ class DayWorksController extends AppController
         if ($data) {
             // ブロックのデータを集計して配列を作成
             $reports = [];
+
+            // ソート用にcode取得する
+            $Codes = $this->fetchTable('MasterProductCodes')->find('list', ['keyField' => 'id', 'valueField' => 'code'])->toArray();
+
             $total = 0;
             foreach ($data as $d) {
                 if (!empty($d->blocks)) {
 
                     foreach ($d->blocks as $block) {
                         // 合計値用の計算をしておく
-                        $total = (double) $total + (double) $block->value04;
+                        $total = (double) $total + (double) $block->value03;
 
                         if (array_key_exists($block->value01, $reports) && array_key_exists($block->value02, $reports[$block->value01])) {
                             // 同じ案件＆同じ作業コードのものが計上済みなら加算
-                            $sum = ((double) $reports[$block->value01][$block->value02]['time'] + (double) $block->value04);
+                            $sum = ((double) $reports[$block->value01][$block->value02]['time'] + (double) $block->value03);
                             $reports[$block->value01][$block->value02] = [
                                 'product_code' => $block->value01,
                                 'work_code' => $block->value02,
@@ -373,7 +375,7 @@ class DayWorksController extends AppController
                             $reports[$block->value01][$block->value02] = [
                                 'product_code' => $block->value01,
                                 'work_code' => $block->value02,
-                                'time' => $block->value04,
+                                'time' => $block->value03,
                             ];
                         }
                     }

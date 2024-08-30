@@ -42,6 +42,16 @@ class DayWorks extends AbstractMigration
                 'limit' => 50,
                 'null' => true,
             ])
+            ->addColumn('start_time', 'string', [
+                'default' => null,
+                'limit' => 50,
+                'null' => true,
+            ])
+            ->addColumn('end_time', 'string', [
+                'default' => null,
+                'limit' => 50,
+                'null' => true,
+            ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
