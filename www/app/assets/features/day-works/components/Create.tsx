@@ -28,28 +28,14 @@ const Create = () => {
     const mutation = useCreateDayWork();
 
     const confirmMutation =  useConfirmDayWork();
-
-
     const { setError } = useFormContext();
-
-
-
 
     const [isValid, setValid] = useBoolean();
     const [isConfirm, setConfirm] = useBoolean();
 
-
-
-
-
     const navigate = useNavigate();
     const contentsKey = useContentsKey();
-
-
-
     const { data: meta } = useDayWorkMeta();
-
-
 
     const onSubmit: SubmitHandler<DayWorkFormValuesType> = async (values) => {
 
@@ -59,10 +45,7 @@ const Create = () => {
             navigate(`${adminPrefix}${contentsKey}`);
 
         } else {
-
             try {
-
-
                const data = await confirmMutation.mutateAsync({
                     data: values,
                 });
@@ -70,8 +53,6 @@ const Create = () => {
                     setValid.on();
                     setConfirm.on();
                 }
-
-
             } catch (e) {
                 if (e instanceof AxiosError) {
                     if (e.response?.status === 422) {
@@ -86,15 +67,10 @@ const Create = () => {
                     }
                 }
             }
-
         }
-
     };
 
-
-
     return (
-        
          <FormWithConfirm<DayWorkFormValuesType>
             onSubmit={onSubmit}
             isLoading={mutation.isLoading}
@@ -102,11 +78,8 @@ const Create = () => {
             isConfirm={isConfirm}
             setConfirm={setConfirm}
             isConfirmLoading={confirmMutation.isLoading}
-           
         >
-             
-                    <Form model={dayWorksModel} isConfirm={isConfirm} />
-             
+            <Form model={dayWorksModel} isConfirm={isConfirm} />
         </FormWithConfirm>
         
     );
