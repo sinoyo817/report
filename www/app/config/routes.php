@@ -214,7 +214,7 @@ return static function (RouteBuilder $routes) {
                 ]
             ]);
             $apiBuilder->resources('{controller}', [
-                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download'],
+                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'report'],
                 'map' => [
                     'status' => [
                         'method' => 'POST',
@@ -242,6 +242,13 @@ return static function (RouteBuilder $routes) {
                     'csv-download' => [
                         'method' => 'GET',
                         'action' => 'csv-download',
+                    ],
+                    'report' => [
+                        // 'method' => 'POST',
+                        // 'action' => 'report',
+                        // 'path' => '/report/{id}',
+                        'method' => 'GET',
+                        'action' => 'report',
                     ],
                 ]
             ]);
@@ -301,7 +308,7 @@ return static function (RouteBuilder $routes) {
 
 
             $apiBuilder->resources('{controller}', [
-                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download'],
+                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'report'],
                 'map' => [
                     'status' => [
                         'method' => 'POST',
@@ -329,6 +336,13 @@ return static function (RouteBuilder $routes) {
                     'csv-download' => [
                         'method' => 'GET',
                         'action' => 'csv-download',
+                    ],
+                    'report' => [
+                        // 'method' => 'POST',
+                        // 'action' => 'report',
+                        // 'path' => '/report/{id}',
+                        'method' => 'GET',
+                        'action' => 'report',
                     ],
                 ]
             ]);

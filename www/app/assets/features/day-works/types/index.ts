@@ -19,6 +19,7 @@ export type DayWorkType = {
     published: string;
     start_time: string;
     end_time: string;
+    report: string;
     
     blocks: BaseBlockEntityType[];
     metadata?: MetadataType | null;

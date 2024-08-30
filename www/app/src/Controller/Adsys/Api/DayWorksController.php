@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller\Adsys\Api;
 
 use App\Controller\AppController;
+use App\Model\Entity\DayWork;
+use App\Model\Filter\DayWorksCollection;
 use Medii\Crud\Interfaces\ConfirmInterface;
 use Medii\Crud\Interfaces\CreateInterface;
 use Medii\Crud\Interfaces\PreviewInterface;
@@ -12,7 +14,14 @@ use Medii\Crud\Interfaces\SearchInterface;
 use Medii\Crud\Interfaces\StatusInterface;
 use Medii\Crud\Interfaces\UpdateInterface;
 
+use Cake\ORM\Query;
 use Cake\Core\Configure;
+use Cake\Log\Log;
+use Cake\Utility\Hash;
+use Cake\Mailer\MailerAwareTrait;
+use Cake\Http\CallbackStream;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv as WriterCsv;
 
 /**
  * DayWorks Controller
@@ -21,6 +30,7 @@ use Cake\Core\Configure;
  */
 class DayWorksController extends AppController
 {
+    use MailerAwareTrait;
     protected $defaultTable = 'DayWorks';
 
     public $paginate = [
@@ -213,13 +223,28 @@ class DayWorksController extends AppController
          $this->set('data', $data);
     }
 
-    public function report($id=null)
+    public function report()
     {
-        Log::write('debug', 'Report action called with ID: ' . $id);
-        // $associated = ['Blocks', 'Metadatas'];
+        $id = $this->request->getQueryParams()['id'];
 
-        // $table = $this->fetchTable();
-        // $data = $table->findById($id)->contain($associated)->all();
+        $associated = [
+            'Blocks' => function (Query $q) {
+                return $q->where(['value05' => '1'])->distinct('value01');
+            },
+            'CreateAdmins'
+        ];
 
+        $table = $this->fetchTable();
+        
+        if($id && $table->exists(["DayWorks.id" => $id])) {
+            $data = $table->findById($id)->contain($associated)->firstOrFail();
+
+            $table = $this->fetchTable('MasterProductCodes');
+            $ProductCodes = $table->find('list')->select(['id', 'title'])->toArray();
+
+            $this->getMailer('Report')->send('sendReport', [$data, $ProductCodes]);
+        }
+
+        return $this->redirect(['controller' => 'DayWorks' , 'action' => 'index', 'prefix' => 'Adsys']);
     }
 }

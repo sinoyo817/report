@@ -10,6 +10,7 @@ import {
     Text,
     useBoolean,
     HStack,
+    Link,
 } from "@chakra-ui/react";
 import {
     ColumnDef,
@@ -64,6 +65,8 @@ const Index = () => {
 
     const initialCsvLink = `${adminPrefix}api/day-works/csv-download`;
     const [csvLink, setcsvLink] = useState<string>(initialCsvLink);
+    
+    const initialReportLink = `${adminPrefix}api/day-works/report`;
 
     const [rowSelection, setRowSelection] = useState({});
 
@@ -78,7 +81,6 @@ const Index = () => {
             columnHelper.accessor("work_date", {
                 id: "work_date",
                 cell: (info) => {
-
                     return (
                         <CrudLinkCell id={info.row.original.id}>
                             {info.getValue()}
@@ -119,14 +121,13 @@ const Index = () => {
                 // footer: (info) => info.column.id,
             }) as ColumnDef<DayWorkType>
         );
-
         commonColumn.push(
-            columnHelper.accessor("work_date", {
-                id: "work_date",
+            columnHelper.accessor("report", {
+                id: "report",
                 cell: (info) => {
 
                     return (
-                        <Button as={RouterLink} to={"./report/"+info.row.original.id} bg="cyan.800" color="white">
+                        <Button as={Link} href={initialReportLink+"?id="+info.row.original.id} bg="pink.600" color="white">
                             送信
                         </Button>
                     );
