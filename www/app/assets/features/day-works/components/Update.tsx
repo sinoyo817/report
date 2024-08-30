@@ -9,7 +9,6 @@ import { DayWorkFormValuesType } from "../types";
 
 import { useDayWorkMeta } from "../api/getDayWorkMeta";
 
-
 import { useBoolean, useDisclosure } from "@chakra-ui/react";
 
 import Form from "./Form";
@@ -24,7 +23,6 @@ import { FormWithConfirm } from "@/components/Form/FormWithConfirm";
 import { useContentsKey } from "@/features/misc/hooks/useContentsKey";
 import { adminPrefix   } from "@/config";
 
-
 type CrudProps = {
     id: string;
     
@@ -35,31 +33,17 @@ const Update = ({ id   }: CrudProps) => {
 
     const confirmMutation =  useConfirmDayWork();
 
-
     const { setError, reset } = useFormContext();
-
-
 
 
     const [isValid, setValid] = useBoolean();
     const [isConfirm, setConfirm] = useBoolean();
 
-
-
-
-
     const navigate = useNavigate();
     const contentsKey = useContentsKey();
 
-
     const query = useDayWork({ id   });
-
-
-
-
     const { data: meta } = useDayWorkMeta();
-
-
 
     useEffect(() => {
         if (query.isFetched && query.data) {
@@ -74,16 +58,11 @@ const Update = ({ id   }: CrudProps) => {
               const data = await mutation.mutateAsync({
                 data: values,
                 id: id,
-                
             });
 
             navigate(`${adminPrefix}${contentsKey}`);
-
         } else {
-
             try {
-
-
                const data = await confirmMutation.mutateAsync({
                     data: values,
                     id: id,
@@ -92,7 +71,6 @@ const Update = ({ id   }: CrudProps) => {
                     setValid.on();
                     setConfirm.on();
                 }
-
 
             } catch (e) {
                 if (e instanceof AxiosError) {
@@ -108,17 +86,11 @@ const Update = ({ id   }: CrudProps) => {
                     }
                 }
             }
-
         }
-
     };
-
-
 
     return (
         <>
-         
-        
          <FormWithConfirm<DayWorkFormValuesType>
             onSubmit={onSubmit}
             isLoading={mutation.isLoading}
@@ -126,13 +98,9 @@ const Update = ({ id   }: CrudProps) => {
             isConfirm={isConfirm}
             setConfirm={setConfirm}
             isConfirmLoading={confirmMutation.isLoading}
-             
         >
-            
-                    <Form model={dayWorksModel} isConfirm={isConfirm}  isEdit={true}    />
-             
+            <Form model={dayWorksModel} isConfirm={isConfirm}  isEdit={true}    />
         </FormWithConfirm>
-        
         </>
     );
 };

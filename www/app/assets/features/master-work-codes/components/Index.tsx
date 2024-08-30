@@ -262,8 +262,8 @@ const Index = () => {
                   setPagination={setPagination}
                   pageNumber={pageNumber}
                   isLoading={isLoading}
-                  isCsvDownload={true}
-                  csvDownloadLink={csvLink}
+                //   isCsvDownload={true}
+                //   csvDownloadLink={csvLink}
               />
             )}
 
