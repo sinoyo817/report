@@ -24,6 +24,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv as WriterCsv;
 
 use Cake\Collection\Collection;
+use Cake\Chronos\Chronos;
 
 /**
  * DayWorks Controller
@@ -61,7 +62,21 @@ class DayWorksController extends AppController
     public function index(SearchInterface $search)
     {
         $associated = ['Blocks', 'Metadatas', 'CreateAdmins', 'ModifiedAdmins'];
+
+        // 初期表示では当月分を表示する
+        $param = $this->request->getQueryParams();
         $conditions = [];
+        if (!isset($param['start_date']) && !isset($param['end_date'])) {
+            // 現在の日付をから今月の月初と月末を取得
+            $now = Chronos::now();
+            $firstDayOfMonth = $now->startOfMonth()->format('Y-m-d');
+            $lastDayOfMonth = $now->endOfMonth()->format('Y-m-d');
+
+            $conditions = [
+                'DayWorks.work_date >= ' => $firstDayOfMonth,
+                'DayWorks.work_date <=' => $lastDayOfMonth
+            ];
+        }
 
         // ログインしているユーザーのIDを取得
         $result = $this->Authentication->getResult();
@@ -72,7 +87,7 @@ class DayWorksController extends AppController
             // スーパーユーザーじゃなければ自分が登録したものだけ
             if (!$superuser) {
                 $userId = $identity->getIdentifier();
-                $conditions = ['DayWorks.created_by_admin' => $userId];
+                $conditions['DayWorks.created_by_admin'] = $userId;
             }
         }
 
@@ -250,6 +265,7 @@ class DayWorksController extends AppController
 
         return $this->redirect(['controller' => 'DayWorks' , 'action' => 'index', 'prefix' => 'Adsys']);
     }
+
     /**
      * csvDownload method
      *
@@ -276,7 +292,7 @@ class DayWorksController extends AppController
         $start_date = $this->request->getQueryParams()['start_date'] ?? "";
         $end_date = $this->request->getQueryParams()['end_date'] ?? "";
 
-        if (!empty($start_date) || !empty($end_date)) {            
+        if (!empty($start_date) || !empty($end_date)) {
             $period = [$start_date, $end_date];
             $filename = implode(' ～ ', $period) . '日報_' . date('YmdHis');
         } else {
@@ -326,34 +342,21 @@ class DayWorksController extends AppController
      */
     private function _getBodyCell($sheet)
     {
+        // 出力対象のDataを抽出
+        $data = $this->_getData();
 
-        $role = $this->Authentication->getIdentityData('role');
-        $roleData = Configure::read("Roles." . $role) ?? [];
-
-        if (!$roleData) {
-            return;
-        }
-
-        $associated = [
-            'Blocks',
-            'CreateAdmins',
-        ];
-
-        $table = $this->fetchTable();
-        $query = $this->Authorization->applyScope($table->find('search', [
-            'search' => $this->request->getQueryParams(),
-            'collection' => DayWorksCollection::class
-        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
-
-        /** @var \App\Model\Entity\DayWorks[] $data  */
-        $data = $query->all()->toArray();
+        // Master用のテーブルを取得しとく
+        $MasterProductCodesTable = $this->fetchTable('MasterProductCodes');
+        $MasterProductCodesTable->changePrivate();
+        $MasterWorkCodesTable = $this->fetchTable('MasterWorkCodes');
+        $MasterWorkCodesTable->changePrivate();
 
         if ($data) {
             // ブロックのデータを集計して配列を作成
             $reports = [];
 
-            // ソート用にcode取得する
-            $Codes = $this->fetchTable('MasterProductCodes')->find('list', ['keyField' => 'id', 'valueField' => 'code'])->toArray();
+            // 同じ案件をまとめて出力したいのでソート用にcode取得する
+            $Codes = $MasterProductCodesTable->find('list', ['keyField' => 'id', 'valueField' => 'code'])->toArray();
 
             $total = 0;
             foreach ($data as $d) {
@@ -363,16 +366,28 @@ class DayWorksController extends AppController
                         // 合計値用の計算をしておく
                         $total = (double) $total + (double) $block->value03;
 
-                        if (array_key_exists($block->value01, $reports) && array_key_exists($block->value02, $reports[$block->value01])) {
-                            // 同じ案件＆同じ作業コードのものが計上済みなら加算
-                            $sum = ((double) $reports[$block->value01][$block->value02]['time'] + (double) $block->value03);
-                            $reports[$block->value01][$block->value02] = [
-                                'product_code' => $block->value01,
-                                'work_code' => $block->value02,
-                                'time' => $sum,
-                            ];
+                        if (array_key_exists($block->value01, $Codes)) {
+                            $code = $Codes[$block->value01];
+
+                        // pr($code);
+                            if (isset($reports[$code]) && array_key_exists($block->value01, $reports[$code]) && array_key_exists($block->value02, $reports[$code][$block->value01])) {
+                                // 同じ案件＆同じ作業コードのものが計上済みなら加算
+                                $sum = ((double) $reports[$code][$block->value01][$block->value02]['time'] + (double) $block->value03);
+                                $reports[$code][$block->value01][$block->value02] = [
+                                    'product_code' => $block->value01,
+                                    'work_code' => $block->value02,
+                                    'time' => $sum,
+                                ];
+                            } else {
+                                $reports[$code][$block->value01][$block->value02] = [
+                                    'product_code' => $block->value01,
+                                    'work_code' => $block->value02,
+                                    'time' => $block->value03,
+                                ];
+                            }
+
                         } else {
-                            $reports[$block->value01][$block->value02] = [
+                            $reports[][$block->value01][$block->value02] = [
                                 'product_code' => $block->value01,
                                 'work_code' => $block->value02,
                                 'time' => $block->value03,
@@ -381,38 +396,41 @@ class DayWorksController extends AppController
                     }
                 }
             }
+            // pr($reports);
 
-            $ProductCodes = $this->fetchTable('MasterProductCodes')->find()->toArray();
-            $WorkCodes = $this->fetchTable('MasterWorkCodes')->find()->toArray();
+            $ProductCodes = $MasterProductCodesTable->find()->toArray();
+            $WorkCodes = $MasterWorkCodesTable->find()->toArray();
 
             $index = 2;
-            foreach ($reports as $report) {
-                foreach ($report as $rep) {
-                    $product = Hash::extract($ProductCodes, "{n}[id={$rep['product_code']}]");
-                    $product = Hash::get($product, '0');
-                    $work = Hash::extract($WorkCodes, "{n}[id={$rep['work_code']}]");
-                    $work = Hash::get($work, '0');
-
-                    foreach (range('A', 'E') as $col) {
-                        
-                        if ($col === 'A') {
-                            $sheet->setCellValue("{$col}{$index}", $product ? $product->code : "");
-                        } elseif ($col === 'B') {
-                            $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
-                        } elseif ($col === 'C') {
-                            $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
-                        } elseif ($col === 'D') {
-                            $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
-                        } elseif ($col === 'E') {
-                            $text = ""; 
-                            if (!empty($product)) {
-                                $text = $product->can ? "{$product->can} : {$product->title}" : $product->title;
+            foreach ($reports as $key => $report_list) {
+                foreach ($report_list as $report) {
+                    foreach ($report as $rep) {
+                        $product = Hash::extract($ProductCodes, "{n}[id={$rep['product_code']}]");
+                        $product = Hash::get($product, '0');
+                        $work = Hash::extract($WorkCodes, "{n}[id={$rep['work_code']}]");
+                        $work = Hash::get($work, '0');
+    
+                        foreach (range('A', 'E') as $col) {
+                            
+                            if ($col === 'A') {
+                                $sheet->setCellValue("{$col}{$index}", $key);
+                            } elseif ($col === 'B') {
+                                $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
+                            } elseif ($col === 'C') {
+                                $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
+                            } elseif ($col === 'D') {
+                                $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
+                            } elseif ($col === 'E') {
+                                $text = ""; 
+                                if (!empty($product)) {
+                                    $text = $product->can ? "{$product->can} : {$product->title}" : "";
+                                }
+                                $sheet->setCellValue("{$col}{$index}", $text);
                             }
-                            $sheet->setCellValue("{$col}{$index}", $text);
                         }
+    
+                        $index++;
                     }
-
-                    $index++;
                 }
             }
             // 最終行にトータルを入れる
@@ -443,5 +461,31 @@ class DayWorksController extends AppController
         }
 
         return $ret;
+    }
+
+    private function _getData()
+    {
+        $role = $this->Authentication->getIdentityData('role');
+        $roleData = Configure::read("Roles." . $role) ?? [];
+
+        if (!$roleData) {
+            return;
+        }
+
+        $associated = [
+            'Blocks',
+            'CreateAdmins',
+        ];
+
+        $table = $this->fetchTable();
+        $query = $this->Authorization->applyScope($table->find('search', [
+            'search' => $this->request->getQueryParams(),
+            'collection' => DayWorksCollection::class
+        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+
+        /** @var \App\Model\Entity\DayWorks[] $data  */
+        $data = $query->all()->toArray();
+
+        return $data;
     }
 }

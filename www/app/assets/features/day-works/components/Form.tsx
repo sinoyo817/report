@@ -24,7 +24,10 @@ import { BaseRemoteMultiCheckboxField } from "@/components/Form/BaseRemoteMultiC
 import { BaseBlockField } from "@/components/Form/BaseBlockField";
 import { BaseFieldWrapper } from "@/components/Form/BaseFieldWrapper";
 
-import { BaseBlockEntityType } from "@/types";
+// value03自動計算のcomponent
+import Time from "./Time";
+// ブロックの情報をテーブル表示するcomponent
+import TimeTable from "./TimeTable";
 
 type FormPropType = {
     model: string;
@@ -36,40 +39,7 @@ type FormPropType = {
 const Form = (props: FormPropType) => {
     const { model, data, isConfirm = false, isEdit = false  } = props;
 
-    const { watch, setValue } = useFormContext<DayWorkFormValuesType>();
-
     const { data: meta } = useDayWorkMeta();
-    
-    const calculateTotal = (blocks: BaseBlockEntityType[]) => {
-        return blocks.reduce((sum, block) => {
-            const value04 = block.value04;
-            if (typeof value04 === 'string') {
-                return sum + (parseFloat(value04) || 0);
-            }
-            return sum;
-        }, 0);
-    };
-
-    // ブロックvalue04を自動計算
-    const blocks = watch("blocks") || [];
-    const [total, setTotal] = useState(0);
-
-    // // 空の依存配列により初回レンダリング時にのみ実行される
-    // useEffect(() => {
-    //     const initialTotal = calculateTotal(blocks as any[]);
-    //     setTotal(initialTotal);
-    // }, []);
-
-    // ブロックvalue04を自動計算
-    useEffect(() => {
-        const subscription = watch((value, { name }) => {
-            if (name?.startsWith("blocks")) {
-                const valTotal = calculateTotal((value.blocks || []) as any[]);
-                setTotal(valTotal);
-            }
-        });
-        return () => subscription.unsubscribe();
-    }, [watch]);
 
     return (
         <Box mb="2">
@@ -92,7 +62,7 @@ const Form = (props: FormPropType) => {
                 </Text>
             </FormLabel>
             <Wrap>
-                <HStack spacing={1} justify="center">
+                {/* <HStack spacing={1} justify="center"> */}
                     <BaseFieldWrapper w="60">
                         <BaseInputField<DayWorkFormValuesType>
                             id="start_time"
@@ -106,11 +76,11 @@ const Form = (props: FormPropType) => {
                             // rule={{ required: "開始時を入力してください" }}
                         />
                     </BaseFieldWrapper>
-                </HStack>
+                {/* </HStack> */}
                 <Box whiteSpace="nowrap" pt={1} fontSize="lg">
                     ~
                 </Box>
-                <HStack spacing={1} justify="center">
+                {/* <HStack spacing={1} justify="center"> */}
                     <BaseFieldWrapper w="60">
                         <BaseInputField<DayWorkFormValuesType>
                             id="end_time"
@@ -124,11 +94,12 @@ const Form = (props: FormPropType) => {
                             // rule={{ required: "開始時を入力してください" }}
                         />
                     </BaseFieldWrapper>
-                </HStack>
+                {/* </HStack> */}
             </Wrap>
-            <Text fontSize="lg" fontWeight="bold">
-                作業時間: {total}
+            <Text color="gray" mb={4}>
+                ※ 日報記載用。工数の集計には影響しない。
             </Text>
+            <Time />
             <BaseBlockField<DayWorkFormValuesType>
                 id="blocks"
                 formType="block"
@@ -139,6 +110,7 @@ const Form = (props: FormPropType) => {
                 blockType="works"
                 defaultValue={[]}
             />
+            <TimeTable />
         </Box>
     );
 };

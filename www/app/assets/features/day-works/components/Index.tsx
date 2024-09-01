@@ -182,7 +182,12 @@ const Index = () => {
                 cell: (info) => {
 
                     return (
-                        <Button as={Link} href={initialReportLink+"?id="+info.row.original.id} bg="pink.600" color="white">
+                        <Button
+                            as={Link}
+                            href={initialReportLink+"?id="+info.row.original.id}
+                            bg="green.500"
+                            color="white"
+                        >
                             送信
                         </Button>
                     );
@@ -257,7 +262,6 @@ const Index = () => {
     
     // 日報に記載するテキスト
     const sendText = (blocks: BaseBlockEntityType[], masterProductCodes: BaseSelectOptions[]) => {
-
         // master_product_codesをキーと値のペアに変換
         const productCodeMap = masterProductCodes.reduce((acc, code) => {
             acc[code.id] = code.title;
@@ -311,6 +315,7 @@ const Index = () => {
         }
     }, [data]);
 
+    // CSV出力用のクエリ作成
     useEffect(() => {
         const param = getContentsFilter();
         if (param) {
