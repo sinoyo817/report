@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
     Text,
+    Box,
 } from "@chakra-ui/react";
 
 import { useDayWorkMeta } from "../api/getDayWorkMeta";
@@ -41,9 +42,18 @@ const Time = () => {
     }, [watch]);
 
     return (
-        <Text fontSize="lg" fontWeight="bold">
-            作業時間: {total}
-        </Text>
+        <Box
+            border="2px"
+            borderColor="gray.200"
+            p={4}
+            borderRadius="md"
+            bg="gray.50"
+            textAlign="center"
+        >
+            <Text fontSize="lg" fontWeight="bold">
+                作業時間: {total}
+            </Text>
+        </Box>
     );
 };
 

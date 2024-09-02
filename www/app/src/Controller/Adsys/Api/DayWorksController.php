@@ -63,6 +63,7 @@ class DayWorksController extends AppController
     {
         $associated = ['Blocks', 'Metadatas', 'CreateAdmins', 'ModifiedAdmins'];
 
+
         // 初期表示では当月分を表示する
         $param = $this->request->getQueryParams();
         $conditions = [];
@@ -327,7 +328,7 @@ class DayWorksController extends AppController
     {
         $header = [];
 
-        foreach (range('A', 'E') as $col) {
+        foreach (range('A', 'F') as $col) {
             $header[] = $this->_getCellData($col, true);
         }
 
@@ -410,17 +411,19 @@ class DayWorksController extends AppController
                         $work = Hash::extract($WorkCodes, "{n}[id={$rep['work_code']}]");
                         $work = Hash::get($work, '0');
     
-                        foreach (range('A', 'E') as $col) {
+                        foreach (range('A', 'F') as $col) {
                             
                             if ($col === 'A') {
                                 $sheet->setCellValue("{$col}{$index}", $key);
                             } elseif ($col === 'B') {
-                                $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
+                                $sheet->setCellValue("{$col}{$index}", $product ? $product->can : "");
                             } elseif ($col === 'C') {
-                                $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
+                                $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
                             } elseif ($col === 'D') {
-                                $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
+                                $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
                             } elseif ($col === 'E') {
+                                $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
+                            } elseif ($col === 'F') {
                                 $text = ""; 
                                 if (!empty($product)) {
                                     $text = $product->can ? "{$product->can} : {$product->title}" : "";
@@ -447,15 +450,18 @@ class DayWorksController extends AppController
                 $ret = $isHeader ? '予算コード' : null;
                 break;
             case "B":
-                $ret = $isHeader ? '案件名' : null;
+                $ret = $isHeader ? 'CAN' : null;
                 break;
             case "C":
-                $ret = $isHeader ? '作業内容' : null;
+                $ret = $isHeader ? '案件名' : null;
                 break;
             case "D":
-                $ret = $isHeader ? '工数' : null;
+                $ret = $isHeader ? '作業内容' : null;
                 break;
             case "E":
+                $ret = $isHeader ? '工数' : null;
+                break;
+            case "F":
                 $ret = $isHeader ? '備考' : null;
                 break;
         }
