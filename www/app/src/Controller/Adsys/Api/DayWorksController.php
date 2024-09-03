@@ -373,26 +373,14 @@ class DayWorksController extends AppController
                         // pr($code);
                             if (isset($reports[$code]) && array_key_exists($block->value01, $reports[$code]) && array_key_exists($block->value02, $reports[$code][$block->value01])) {
                                 // 同じ案件＆同じ作業コードのものが計上済みなら加算
-                                $sum = ((double) $reports[$code][$block->value01][$block->value02]['time'] + (double) $block->value03);
-                                $reports[$code][$block->value01][$block->value02] = [
-                                    'product_code' => $block->value01,
-                                    'work_code' => $block->value02,
-                                    'time' => $sum,
-                                ];
+                                $sum = ((double) $reports[$code][$block->value01][$block->value02] + (double) $block->value03);
+                                $reports[$code][$block->value01][$block->value02] = $sum;
                             } else {
-                                $reports[$code][$block->value01][$block->value02] = [
-                                    'product_code' => $block->value01,
-                                    'work_code' => $block->value02,
-                                    'time' => $block->value03,
-                                ];
+                                $reports[$code][$block->value01][$block->value02] = $block->value03;
                             }
 
                         } else {
-                            $reports[][$block->value01][$block->value02] = [
-                                'product_code' => $block->value01,
-                                'work_code' => $block->value02,
-                                'time' => $block->value03,
-                            ];
+                            $reports[][$block->value01][$block->value02] = $block->value03;
                         }
                     }
                 }
@@ -403,18 +391,17 @@ class DayWorksController extends AppController
             $WorkCodes = $MasterWorkCodesTable->find()->toArray();
 
             $index = 2;
-            foreach ($reports as $key => $report_list) {
-                foreach ($report_list as $report) {
-                    foreach ($report as $rep) {
-                        $product = Hash::extract($ProductCodes, "{n}[id={$rep['product_code']}]");
+            foreach ($reports as $product_code => $report_list) {
+                foreach ($report_list as $product_id =>$report) {
+                    foreach ($report as $work_code => $rep) {
+                        $product = Hash::extract($ProductCodes, "{n}[id={$product_id}]");
                         $product = Hash::get($product, '0');
-                        $work = Hash::extract($WorkCodes, "{n}[id={$rep['work_code']}]");
+                        $work = Hash::extract($WorkCodes, "{n}[id={$work_code}]");
                         $work = Hash::get($work, '0');
     
-                        foreach (range('A', 'F') as $col) {
-                            
+                        foreach (range('A', 'F') as $col) {                            
                             if ($col === 'A') {
-                                $sheet->setCellValue("{$col}{$index}", $key);
+                                $sheet->setCellValue("{$col}{$index}", $product_code);
                             } elseif ($col === 'B') {
                                 $sheet->setCellValue("{$col}{$index}", $product ? $product->can : "");
                             } elseif ($col === 'C') {
@@ -422,7 +409,7 @@ class DayWorksController extends AppController
                             } elseif ($col === 'D') {
                                 $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
                             } elseif ($col === 'E') {
-                                $sheet->setCellValue("{$col}{$index}", $rep['time'] ?? "");
+                                $sheet->setCellValue("{$col}{$index}", $rep ?? "");
                             } elseif ($col === 'F') {
                                 $text = ""; 
                                 if (!empty($product)) {
@@ -436,12 +423,157 @@ class DayWorksController extends AppController
                     }
                 }
             }
-            // 最終行にトータルを入れる
-            $sheet->setCellValue("D{$index}", $total);
+            // 最終列にトータルを入れる
+            $sheet->setCellValue("E{$index}", $total);
             // exit;
         }
     }
 
+    /**
+     * _getBodyCell function
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet
+     * @return void
+     */
+    private function _getDailyBodyCell($sheet, $data, $lastKey)
+    {
+        // Master用のテーブルを取得しとく
+        $MasterProductCodesTable = $this->fetchTable('MasterProductCodes');
+        $MasterProductCodesTable->changePrivate();
+        $MasterWorkCodesTable = $this->fetchTable('MasterWorkCodes');
+        $MasterWorkCodesTable->changePrivate();
+
+        unset($data['A']);
+        unset($data['B']);
+        unset($data['C']);
+        unset($data['D']);
+        // pr($data);
+        // exit;
+
+        if ($data) {
+            // ブロックのデータを集計して配列を作成
+            $reports = [];
+
+            // 同じ案件をまとめて出力したいのでソート用にcode取得する
+            $Codes = $MasterProductCodesTable->find('list', ['keyField' => 'id', 'valueField' => 'code'])->toArray();
+
+            $totalCell = [];
+            foreach ($data as $col => $d) {
+                if (!empty($d->blocks)) {
+
+                    foreach ($d->blocks as $block) {
+                        if (array_key_exists($block->value01, $Codes)) {
+                            $code = $Codes[$block->value01];
+                            $reports[$code][$block->value01][$block->value02][$col] = $block->value03;
+
+                        } else {
+                            $reports[][$block->value01][$block->value02][$col] = $block->value03;
+                        }
+
+                        // 縦軸の合計値を配列にまとめる
+                        if (isset($totalCell[$col])) {
+                            $totalCell[$col] = (double) $totalCell[$col] + (double) $block->value03;
+                        } else {
+                            $totalCell[$col] = $block->value03;
+                        }
+                    }
+                }
+            }
+// pr($totalCell);
+// pr($reports);
+// exit;
+            $ProductCodes = $MasterProductCodesTable->find()->toArray();
+            $WorkCodes = $MasterWorkCodesTable->find()->toArray();
+
+            $index = 2;            
+            $totalAll = 0;
+            foreach ($reports as $product_code => $report_list) {
+                foreach ($report_list as $product_id => $report) {
+                    foreach ($report as $work_code => $rep) {
+                        $product = Hash::extract($ProductCodes, "{n}[id={$product_id}]");
+                        $product = Hash::get($product, '0');
+                        $work = Hash::extract($WorkCodes, "{n}[id={$work_code}]");
+                        $work = Hash::get($work, '0');
+                        // pr($product);
+                        // pr($work);
+                        // pr($rep);
+    
+                        $total = 0;
+                        foreach (range('A', $lastKey) as $col) {
+                            
+                            if ($col === 'A') {
+                                $sheet->setCellValue("{$col}{$index}", $product_code);
+                            } elseif ($col === 'B') {
+                                $sheet->setCellValue("{$col}{$index}", $product ? $product->can : "");
+                            } elseif ($col === 'C') {
+                                $sheet->setCellValue("{$col}{$index}", $product ? $product->title : "");
+                            } elseif ($col === 'D') {
+                                $sheet->setCellValue("{$col}{$index}", $work ? $work->title : "");
+                            } elseif ($col === $lastKey) {
+                                $sheet->setCellValue("{$col}{$index}", $total);
+                            } else {
+                                $sheet->setCellValue("{$col}{$index}", array_key_exists($col, $rep) ? $rep[$col] : "");
+                                if (isset($rep[$col])) {
+                                    $total = (double) $total + (double) $rep[$col];
+                                }
+                            }
+                        }
+    
+                        $index++;
+                        $totalAll = (double) $totalAll + (double) $total;
+                    }
+                }
+            }
+            // 最終行と最終列にトータルを入れる
+            foreach ($totalCell as $col => $sum) {
+                $sheet->setCellValue("{$col}{$index}", $sum);
+            }
+            $sheet->setCellValue("{$lastKey}{$index}", $totalAll);
+        }
+        // exit;
+    }
+
+    
+    // トータル＆日別共通：データ取得
+    private function _getData()
+    {
+        $role = $this->Authentication->getIdentityData('role');
+        $roleData = Configure::read("Roles." . $role) ?? [];
+
+        if (!$roleData) {
+            return;
+        }
+
+        $associated = [
+            'Blocks',
+            'CreateAdmins',
+        ];
+
+        $condition = [];
+        if (!empty($this->request->getQueryParams())) {
+            $condition = $this->request->getQueryParams();
+        } else {
+            // 検索条件が何も入っていなかったら今月を取得する
+            $now = Chronos::now();
+            $condition = [
+                'start_date' => $now->startOfMonth()->toDateString(),
+                'end_date' => $now->endOfMonth()->toDateString(),
+            ];
+        }
+
+        $table = $this->fetchTable();
+        $query = $this->Authorization->applyScope($table->find('search', [
+            'search' => $condition,
+            'collection' => DayWorksCollection::class
+        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+
+        /** @var \App\Model\Entity\DayWorks[] $data  */
+        $data = $query->all()->toArray();
+
+        return $data;
+    }
+
+    // トータルCSVのヘッダ取得
     protected function _getCellData($col, $isHeader = false,)
     {
         $ret = null;
