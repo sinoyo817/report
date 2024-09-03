@@ -62,6 +62,9 @@ const Index = () => {
 
     const initialCsvLink = `${adminPrefix}api/day-works/csv-download`;
     const [csvLink, setcsvLink] = useState<string>(initialCsvLink);
+
+    const initialCsvDailyLink = `${adminPrefix}api/day-works/csv-daily-download`;
+    const [csvDailyLink, setcsvDailyLink] = useState<string>(initialCsvDailyLink);
     
     const initialReportLink = `${adminPrefix}api/day-works/report`;
 
@@ -329,6 +332,20 @@ const Index = () => {
         }
     }, [getContentsFilter, initialCsvLink]);
 
+    // 日別CSV出力用のクエリ作成
+    useEffect(() => {
+        const param = getContentsFilter();
+        if (param) {
+            const queryString = Object.keys(param)
+                .filter((key) => key !== "page" && key !== "limit")
+                .map((key) => key + "=" + param[key])
+                .join("&");
+            if (queryString) {
+                setcsvDailyLink(`${initialCsvDailyLink}?${queryString}`);
+            }
+        }
+    }, [getContentsFilter, initialCsvDailyLink]);
+
     useEffect(() => {
         setRowSelection({});
     }, [pageNumber, isDnd, pageLimit]);
@@ -421,6 +438,7 @@ const Index = () => {
 
                   isCsvDownload={true}
                   csvDownloadLink={csvLink}
+                  csvAllDownloadLink={csvDailyLink}
               />
             )}
         </Box>

@@ -45,6 +45,7 @@ export type PaginationTableProps<TData extends BaseEntityType> = {
     isCsvDownload?: boolean;
     isCsvUpload?: boolean;
     csvDownloadLink?: string;
+    csvAllDownloadLink?: string;
     csvDownloadOnClick?: React.MouseEventHandler<HTMLButtonElement>;
     csvUploadOnClick?: React.MouseEventHandler<HTMLButtonElement>;
 } & TableProps;
@@ -63,6 +64,7 @@ export const PaginationTable = <TData extends BaseEntityType>(
         isCsvDownload = false,
         isCsvUpload = false,
         csvDownloadLink,
+        csvAllDownloadLink,
         csvDownloadOnClick,
         csvUploadOnClick,
         ...tableProps
@@ -102,6 +104,17 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                 href={csvDownloadLink}
                             >
                                 CSV出力
+                            </Button>
+                        )}
+                        {isCsvDownload && csvAllDownloadLink && (
+                            <Button
+                                as={Link}
+                                bg="orange.600"
+                                color="white"
+                                target={"_blank"}
+                                href={csvAllDownloadLink}
+                            >
+                                日別CSV出力
                             </Button>
                         )}
                     </ButtonGroup>

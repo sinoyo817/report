@@ -214,7 +214,7 @@ return static function (RouteBuilder $routes) {
                 ]
             ]);
             $apiBuilder->resources('{controller}', [
-                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'report'],
+                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'csv-daily-download', 'report'],
                 'map' => [
                     'status' => [
                         'method' => 'POST',
@@ -242,6 +242,10 @@ return static function (RouteBuilder $routes) {
                     'csv-download' => [
                         'method' => 'GET',
                         'action' => 'csv-download',
+                    ],
+                    'csv-daily-download' => [
+                        'method' => 'GET',
+                        'action' => 'csv-daily-download',
                     ],
                     'report' => [
                         // 'method' => 'POST',
@@ -308,7 +312,7 @@ return static function (RouteBuilder $routes) {
 
 
             $apiBuilder->resources('{controller}', [
-                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'report'],
+                'only' => ['index', 'view', 'create', 'update', 'status', 'confirm-add', 'confirm-edit', 'preview', 'metadata', 'csv-download', 'csv-daily-download', 'report'],
                 'map' => [
                     'status' => [
                         'method' => 'POST',
@@ -336,6 +340,10 @@ return static function (RouteBuilder $routes) {
                     'csv-download' => [
                         'method' => 'GET',
                         'action' => 'csv-download',
+                    ],
+                    'csv-daily-download' => [
+                        'method' => 'GET',
+                        'action' => 'csv-daily-download',
                     ],
                     'report' => [
                         // 'method' => 'POST',

@@ -271,6 +271,7 @@ class DayWorksController extends AppController
      * csvDownload method
      *
      * @return \Cake\Http\Response|null|void Renders view
+     * トータルCSVダウンロード
      */
     public function csvDownload()
     {
@@ -309,29 +310,98 @@ class DayWorksController extends AppController
     }
 
     /**
+     * csvDownload method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     * 日別CSVダウンロード
+     */
+    public function csvDailyDownload()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $this->setCsvData($spreadsheet, true);
+
+        // $writer = new Xlsx($spreadsheet);
+
+        $writer = new WriterCsv($spreadsheet);
+        $writer->setUseBOM(false);
+        $writer->setOutputEncoding('SJIS-WIN');
+        $writer->setEnclosure('"');
+
+        // Save the file in a stream
+        $stream = new CallbackStream(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        $start_date = $this->request->getQueryParams()['start_date'] ?? "";
+        $end_date = $this->request->getQueryParams()['end_date'] ?? "";
+
+        if (!empty($start_date) || !empty($end_date)) {
+            $period = [$start_date, $end_date];
+            $filename = implode(' ～ ', $period) . '日報_' . date('YmdHis');
+        } else {
+            $filename = '日報_' . date('YmdHis');
+        }
+
+        $response = $this->response;
+
+        // Return the stream in a response
+        return $response->withType('csv')
+            ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.csv\"")
+            ->withBody($stream);
+    }
+
+    /**
      * setCsvData function
      *
      * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
      * @return void
+     * トータル＆日別共通
      */
-    private function setCsvData($spreadsheet)
+    private function setCsvData($spreadsheet, $is_daily=false)
     {
-
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->fromArray($this->_getHeaderCell(), null, 'A1', true);
-        $this->_getBodyCell($sheet);
-        // $sheet->fromArray($this->_getBodyCell(), null, 'A2', true);
+        if ($is_daily) {
+            // 出力対象のDataを抽出
+            $datas = $this->_getData();
+
+            // ABCをキーに並べ直す
+            list($lastKey, $results) = $this->_getDailyCellData($datas, 'E');
+
+            $sheet->fromArray($this->_getHeaderCell($is_daily, $results, $lastKey), null, 'A1', true);
+            $this->_getDailyBodyCell($sheet, $results, $lastKey);
+        } else {
+            $sheet->fromArray($this->_getHeaderCell(), null, 'A1', true);
+            $this->_getBodyCell($sheet);
+            // $sheet->fromArray($this->_getBodyCell(), null, 'A2', true);
+        }
     }
 
-    private function _getHeaderCell()
+    /**
+     * getHeaderCell function
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
+     * @return void
+     * トータル＆日別共通：ヘッダ取得
+     */
+    private function _getHeaderCell($is_daily=false, $results=[], $lastKey=null)
     {
         $header = [];
 
-        foreach (range('A', 'F') as $col) {
-            $header[] = $this->_getCellData($col, true);
+        if ($is_daily) {
+            foreach ($results as $col => $val) {
+                if (in_array($col, ['A', 'B', 'C', 'D', $lastKey])) {
+                    $header[] = $val;
+                } else {
+                    $header[] = $val->work_date->format('m/d');
+                }
+            }
+        } else {
+            foreach (range('A', 'F') as $col) {
+                $header[] = $this->_getCellData($col, true);
+            }
         }
-
         return $header;
     }
 
@@ -601,29 +671,40 @@ class DayWorksController extends AppController
         return $ret;
     }
 
-    private function _getData()
+    // 日別CSVのヘッダ取得
+    private function _getDailyCellData($datas, $startKey = 'A')
     {
-        $role = $this->Authentication->getIdentityData('role');
-        $roleData = Configure::read("Roles." . $role) ?? [];
-
-        if (!$roleData) {
-            return;
-        }
-
-        $associated = [
-            'Blocks',
-            'CreateAdmins',
+        $ret = [
+            "A" => '予算コード',
+            "B" => 'CAN',
+            "C" => '案件名',
+            "D" => '作業内容',
         ];
+        $currentKey = $startKey;
 
-        $table = $this->fetchTable();
-        $query = $this->Authorization->applyScope($table->find('search', [
-            'search' => $this->request->getQueryParams(),
-            'collection' => DayWorksCollection::class
-        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+        foreach ($datas as $data) {
+            $ret[$currentKey] = $data;
+            $currentKey = $this->_getNextKey($currentKey);
+        }
+        $lastKey = $currentKey;
+        $ret[$lastKey] = '合計';
 
-        /** @var \App\Model\Entity\DayWorks[] $data  */
-        $data = $query->all()->toArray();
+        return [$lastKey, $ret];
+    }
 
-        return $data;
+    // 日別CSV：動的に行追加
+    private function _getNextKey($key)
+    {
+        $length = strlen($key);
+        $lastChar = substr($key, -1);
+        $rest = substr($key, 0, $length - 1);
+
+        if ($lastChar === 'Z') {
+            if ($rest === '') {
+                return 'AA';
+            }
+            return $this->_getNextKey($rest) . 'A';
+        }
+        return $rest . chr(ord($lastChar) + 1);
     }
 }
