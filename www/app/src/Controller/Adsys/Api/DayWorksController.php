@@ -63,7 +63,6 @@ class DayWorksController extends AppController
     {
         $associated = ['Blocks', 'Metadatas', 'CreateAdmins', 'ModifiedAdmins'];
 
-
         // 初期表示では当月分を表示する
         $param = $this->request->getQueryParams();
         $conditions = [];
@@ -619,23 +618,37 @@ class DayWorksController extends AppController
             'CreateAdmins',
         ];
 
-        $condition = [];
+        $conditions = [];
+
         if (!empty($this->request->getQueryParams())) {
-            $condition = $this->request->getQueryParams();
+            $conditions = $this->request->getQueryParams();
         } else {
             // 検索条件が何も入っていなかったら今月を取得する
             $now = Chronos::now();
-            $condition = [
+            $conditions = [
                 'start_date' => $now->startOfMonth()->toDateString(),
                 'end_date' => $now->endOfMonth()->toDateString(),
             ];
         }
 
+        // ログインしているユーザーのIDを取得
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $identity = $this->request->getAttribute('identity');
+            $superuser = $identity->get('superuser');
+
+            // スーパーユーザーじゃなければ自分が登録したものだけ
+            if (!$superuser) {
+                $userId = $identity->getIdentifier();
+                $conditions['created_by_admin'] = $userId;
+            }
+        }
+
         $table = $this->fetchTable();
         $query = $this->Authorization->applyScope($table->find('search', [
-            'search' => $condition,
+            'search' => $conditions,
             'collection' => DayWorksCollection::class
-        ])->contain($associated)->order(['DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+        ])->contain($associated)->order(['DayWorks.Work_date' => 'asc', 'DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
 
         /** @var \App\Model\Entity\DayWorks[] $data  */
         $data = $query->all()->toArray();
