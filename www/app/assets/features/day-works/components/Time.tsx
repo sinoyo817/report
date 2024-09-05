@@ -25,7 +25,10 @@ const Time = () => {
         return blocks.reduce((sum, block) => {
             const value03 = block.value03;
             if (typeof value03 === 'string') {
-                return sum + (parseFloat(value03) || 0);
+                // return sum + (parseFloat(value03) || 0);
+                // 小数点以下1桁まで四捨五入
+                sum = sum + (parseFloat(value03) || 0);
+                return parseFloat(sum.toFixed(1));
             }
             return sum;
         }, 0);

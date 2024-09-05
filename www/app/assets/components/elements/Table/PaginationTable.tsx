@@ -109,7 +109,7 @@ export const PaginationTable = <TData extends BaseEntityType>(
                         {isCsvDownload && csvAllDownloadLink && (
                             <Button
                                 as={Link}
-                                bg="orange.600"
+                                bg="orange.400"
                                 color="white"
                                 target={"_blank"}
                                 href={csvAllDownloadLink}
