@@ -79,3 +79,7 @@ www/app/config/settings.json
 www/app/config/auth.json
 _list-archive.zip
 _list-archive/
+www/app/bin/bash_completion.sh
+www/app/bin/cake
+www/app/bin/cake.bat
+www/app/bin/cake.php
