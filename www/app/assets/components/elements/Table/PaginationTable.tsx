@@ -71,7 +71,6 @@ export const PaginationTable = <TData extends BaseEntityType>(
     } = props;
 
     const showPagination = (collection && collection.pages > 1) || false;
-
     return (
         <>
             <HStack w="full" my="3" spacing="4">
@@ -155,17 +154,17 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                             color="white"
                                             whiteSpace="normal"
                                             textAlign="center"
-                                            maxW="10"
+                                            // maxW="10"
+                                            maxW={header.column.columnDef.id === 'title' ? '100' : '10'}
                                             {...header.column.columnDef.meta
                                                 ?.thProps}
                                         >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
                                         </Th>
                                     ))}
                                 </Tr>
@@ -204,7 +203,8 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                                 color="gray.900"
                                                 whiteSpace="normal"
                                                 textAlign="center"
-                                                maxW="10"
+                                                // maxW="10"
+                                                maxW={cell.column.columnDef.id === 'title' ? '100' : '10'}
                                                 rowSpan={
                                                     isExpanded
                                                         ? rowSpan
@@ -230,10 +230,9 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef
-                                                          .footer,
-                                                      header.getContext()
-                                                  )}
+                                                    header.column.columnDef.footer,
+                                                    header.getContext()
+                                                )}
                                         </Th>
                                     ))}
                                 </Tr>
