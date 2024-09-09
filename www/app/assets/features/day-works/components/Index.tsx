@@ -87,7 +87,7 @@ const Index = () => {
                         </CrudLinkCell>
                     );
                 },
-                header: () => <span>タイトル</span>,
+                header: () => <span>作業日</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<DayWorkType>
         );
@@ -142,7 +142,8 @@ const Index = () => {
                             blocks,
                             meta.master_product_codes,
                         );
-                        return <pre style={{ textAlign: 'left', margin: 0 }}>{text}</pre>;
+                        // return <pre style={{ textAlign: 'left', margin: 0 }}>{text}</pre>;
+                        return <div style={{ whiteSpace: 'pre-wrap', textAlign: 'left', margin: 0 }}>{text}</div>;
                     }
                 },
                 header: () => <span>日報記載作業</span>,
@@ -225,17 +226,17 @@ const Index = () => {
                 // footer: (info) => info.column.id,
             }) as ColumnDef<DayWorkType>
         );
-        commonColumn.push(
-            columnHelper.accessor("status", {
-                id: "status",
-                cell: (info) => {
-                    const data = info.getValue();
-                    return <StatusCell status={data} />;
-                },
-                header: () => <span>ステータス</span>,
-                // footer: (info) => info.column.id,
-            }) as ColumnDef<DayWorkType>
-        );
+        // commonColumn.push(
+        //     columnHelper.accessor("status", {
+        //         id: "status",
+        //         cell: (info) => {
+        //             const data = info.getValue();
+        //             return <StatusCell status={data} />;
+        //         },
+        //         header: () => <span>ステータス</span>,
+        //         // footer: (info) => info.column.id,
+        //     }) as ColumnDef<DayWorkType>
+        // );
 
          if (isDnd) {
             return commonColumn;
@@ -277,7 +278,7 @@ const Index = () => {
                 const value01 = block.value01;
                 if (value01 && !seen.has(value01)) {
                     seen.add(value01);
-                    return productCodeMap[value01] || '';
+                    return '・ ' + productCodeMap[value01] || '';
                 }
             }
         }).filter(Boolean);

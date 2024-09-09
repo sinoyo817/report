@@ -155,7 +155,7 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                             whiteSpace="normal"
                                             textAlign="center"
                                             // maxW="10"
-                                            maxW={header.column.columnDef.id === 'title' ? '100' : '10'}
+                                            maxW={header.column.columnDef.id === 'title' || header.column.columnDef.id === 'send_text' ? '100' : '10'}
                                             {...header.column.columnDef.meta
                                                 ?.thProps}
                                         >
@@ -204,7 +204,7 @@ export const PaginationTable = <TData extends BaseEntityType>(
                                                 whiteSpace="normal"
                                                 textAlign="center"
                                                 // maxW="10"
-                                                maxW={cell.column.columnDef.id === 'title' ? '100' : '10'}
+                                                maxW={cell.column.columnDef.id === 'title' || cell.column.columnDef.id === 'send_text' ? '100' : '10'}
                                                 rowSpan={
                                                     isExpanded
                                                         ? rowSpan
