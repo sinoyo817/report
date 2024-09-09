@@ -17,7 +17,7 @@ use Cake\Chronos\Chronos;
 
 ◆ 業務日報
 ============================================================
-日付         <?= $data->work_date->format('Y/m/d') . PHP_EOL ?>
+日付         <?= $data->work_date->format('Y/m/d') . "(" . Configure::read("Common.Weeks.{$data->work_date->dayOfWeek}") . ")" . PHP_EOL ?>
 勤務時間帯   <?= $data->start_time ?> ～ <?= $data->end_time . PHP_EOL ?>
 
 
