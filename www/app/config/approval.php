@@ -15,6 +15,9 @@ $allStatusKey = [
     'copiedKey' => 'copied',
     'publishedReqKey' => 'published_req',
     'unpublishedReqKey' => 'unpublished_req',
+    'unsupportedtKey' => 'draft',
+    'supportedtKey' => 'published',
+    'finishedKey' => 'unpublished',
 ];
 $allStatus = [
     $allStatusKey['draftKey'] => '編集中',
@@ -27,6 +30,9 @@ $allStatus = [
     $allStatusKey['copiedKey'] => 'コピー',
     $allStatusKey['publishedReqKey'] => '公開申請',
     $allStatusKey['unpublishedReqKey'] => '非公開申請',
+    // $allStatusKey['unsupportedtKey'] => '未処理',
+    // $allStatusKey['supportedtKey'] => '対応中',
+    // $allStatusKey['finishedKey'] => '対応完了',
 ];
 
 $allActionKey = [
@@ -87,6 +93,18 @@ $allApprovalActions = [
         'status' => $allStatusKey['unpublishedReqKey'],
         'actions' => [],
     ],
+    // [   // 未処理
+    //     'status' => $allStatusKey['unsupportedtKey'],
+    //     'actions' => [],
+    // ],
+    // [   // 対応中
+    //     'status' => $allStatusKey['supportedtKey'],
+    //     'actions' => [$allActionKey['toPublishKey']],
+    // ],
+    // [   // 対応完了
+    //     'status' => $allStatusKey['finishedKey'],
+    //     'actions' => [$allActionKey['toPrivateKey']],
+    // ],
 ];
 
 $allApprovalStatusOption = [
@@ -215,6 +233,31 @@ $allApprovalStatusOption = [
         'forSearch' => false,
         'colorScheme' => 'yellow',
     ],
+    // 日報用
+    $allStatusKey['draftKey'] . "forReport" => [
+        'title' => "未処理",
+        'status' => $allStatusKey['draftKey'],
+        'sequence' => 5,
+        'forSelect' => true,
+        'forSearch' => true,
+        'colorScheme' => 'purple',
+    ],
+    $allStatusKey['publishedKey'] . "forReport" => [
+        'title' => "対応中",
+        'status' => $allStatusKey['publishedKey'],
+        'sequence' => 1,
+        'forSelect' => true,
+        'forSearch' => true,
+        'colorScheme' => 'green',
+    ],
+    $allStatusKey['unpublishedKey'] . "forReport" => [
+        'title' => "対応完了",
+        'status' => $allStatusKey['unpublishedKey'],
+        'sequence' => 2,
+        'forSelect' => true,
+        'forSearch' => true,
+        'colorScheme' => 'gray',
+    ],
 ];
 
 $allStatusOptionKey = [
@@ -223,6 +266,7 @@ $allStatusOptionKey = [
     'adminKey' => 'admin',
     'requestAdminKey' => 'reqeustAdmin',
     'requestEditorKey' => 'reqeustEditor',
+    'requestReportKey' => 'reqeustReport',
 ];
 
 $allStatusOptionTitle = [
@@ -231,6 +275,7 @@ $allStatusOptionTitle = [
     $allStatusOptionKey['adminKey'] => '管理者用',
     $allStatusOptionKey['requestAdminKey'] => '管理者承認処理',
     $allStatusOptionKey['requestEditorKey'] => '編集者用承認処理',
+    $allStatusOptionKey['requestReportKey'] => '未対応/対応中/完了',
 ];
 
 $allStatusOption = [
@@ -273,6 +318,13 @@ $allStatusOption = [
         $allApprovalStatusOption[$allStatusKey['copiedKey']],
         $allApprovalStatusOption[$allStatusKey['deletedKey']],
         $allApprovalStatusOption[$allStatusKey['draftKey']],
+    ],
+    $allStatusOptionKey['requestReportKey'] => [
+        $allApprovalStatusOption[$allStatusKey['draftKey'] . "forReport"],
+        $allApprovalStatusOption[$allStatusKey['publishedKey'] . "forReport"],
+        $allApprovalStatusOption[$allStatusKey['unpublishedKey'] . "forReport"],
+        $allApprovalStatusOption[$allStatusKey['copiedKey']],
+        $allApprovalStatusOption[$allStatusKey['deletedKey']],
     ],
 ];
 

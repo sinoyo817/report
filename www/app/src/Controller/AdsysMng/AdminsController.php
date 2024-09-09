@@ -189,6 +189,11 @@ class AdminsController extends AppController
                         'to' => './master-work-codes',
                         'key' => 'master-work-codes',
                     ],
+                    [
+                        'name' => __('対応したいことリスト'),
+                        'to' => './to-dos',
+                        'key' => 'to-dos',
+                    ],
                     // [
                     //     'name' => __('お知らせカテゴリ'),
                     //     'to' => './master-topic-categories',

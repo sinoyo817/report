@@ -17,6 +17,7 @@ return [
             ],
             "ContentsKey" => [
                 "dayWorksKey" => "DayWorks",
+                "toDosKey" => "ToDos",
                 "topicsKey" => "Topics",
                 "eventsKey" => "Events",
                 "freepagesKey" => "Freepages",
@@ -32,6 +33,7 @@ return [
             ],
             "ContentsList" => [
                 "DayWorks" => "工数",
+                "ToDos" => "対応したいことリスト",
                 // "Topics" => "お知らせ",
                 // "Events" => "イベント",
                 // "Freepages" => "フリーページ",
@@ -58,6 +60,7 @@ return [
                 "masterSetting" => [
                     "MasterProductCodes",
                     "MasterWorkCodes",
+                    "ToDos",
                     "MasterTopicCategories",
                     "MasterEventCategories",
                     "MasterContactCategories",
