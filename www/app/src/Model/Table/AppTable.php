@@ -278,4 +278,51 @@ class AppTable extends Table
         }
         return $query;
     }
+
+    public function reOrder(array $findOptions = [])
+    {
+        if ($this->hasBehavior('Sequence')) {
+            $sequenceBehaviorConfig = $this->getBehavior('Sequence')->getConfig();
+            $this->removeBehavior('Sequence');
+            $orders = [];
+            if ($sequenceBehaviorConfig['scope']) {
+                $scope =  $sequenceBehaviorConfig['scope'];
+                $orders = $scope;
+            }
+            $order = $sequenceBehaviorConfig["sequenceField"];
+            $orders[] = $order;
+            $all = $this->find("all", $findOptions + ["order" => $orders]);
+            $tmp = [];
+            foreach ($all as $v) {
+                $key  = "all";
+                if (!empty($scope)) {
+                    foreach ($scope as $s) {
+                        $key .= $v->{$s};
+                    }
+                }
+                if (!array_key_exists($key, $tmp)) {
+                    $tmp[$key] = 1;
+                }
+                $seq = $tmp[$key]++;
+                $primaryKey = $this->getPrimaryKey();
+                $this->updateAll(['sequence' => $seq], [$primaryKey => $v->{$primaryKey}]);
+            }
+            if ($this->hasBehavior('Approval') && $this->getApprovalMode() == 'Private') {
+                $this->changePublic();
+                $table_name = $this->getTable();
+                $q = $this->updateQuery()
+                    ->update("{$table_name} t, {$table_name}_private p")
+                    ->set(['t.sequence = p.sequence'])
+                    ->where(
+                        function ($exp, $q) {
+                            return $exp->add('t.id = p.id');
+                        }
+                    )
+                    ->execute();
+                $this->changePrivate();
+            }
+            $this->addBehavior('ADmad/Sequence.Sequence', $sequenceBehaviorConfig);
+        }
+    }
+
 }

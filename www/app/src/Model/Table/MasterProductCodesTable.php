@@ -119,4 +119,8 @@ class MasterProductCodesTable extends AppTable
 
         return $validator;
     }
+
+    public function beforeSave() {
+        $this->reOrder();
+    }
 }
