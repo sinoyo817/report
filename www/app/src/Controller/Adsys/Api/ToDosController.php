@@ -23,6 +23,11 @@ class ToDosController extends AppController
 
     public $paginate = [
         'limit' => 20,
+        'order' => [
+            'ToDos.status' => 'ASC',
+            'ToDos.modified' => 'DESC',
+            'ToDos.created' => 'DESC',
+        ],
     ];
 
     /**
