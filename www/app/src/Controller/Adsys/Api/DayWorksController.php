@@ -228,10 +228,10 @@ class DayWorksController extends AppController
         }
 
         $table = $this->fetchTable('MasterProductCodes');
-        $ProductCodes = $table->find()->find('public')->select(['id', 'title'])->where($conditions);
+        $ProductCodes = $table->find()->find('public')->select(['id', 'title'])->where($conditions)->order(['sequence ASC']);
 
         $table = $this->fetchTable('MasterWorkCodes');
-        $WorkCodes = $table->find()->find('public')->select(['id', 'title']);
+        $WorkCodes = $table->find()->find('public')->select(['id', 'title'])->order(['sequence ASC']);
 
         $data = [
             'master_product_codes' => $ProductCodes,
@@ -295,9 +295,9 @@ class DayWorksController extends AppController
 
         if (!empty($start_date) || !empty($end_date)) {
             $period = [$start_date, $end_date];
-            $filename = implode(' ～ ', $period) . '日報_' . date('YmdHis');
+            $filename = implode(' ～ ', $period) . '工数_' . date('YmdHis');
         } else {
-            $filename = '日報_' . date('YmdHis');
+            $filename = '工数_' . date('YmdHis');
         }
 
         $response = $this->response;
@@ -337,9 +337,9 @@ class DayWorksController extends AppController
 
         if (!empty($start_date) || !empty($end_date)) {
             $period = [$start_date, $end_date];
-            $filename = implode(' ～ ', $period) . '日報_' . date('YmdHis');
+            $filename = implode(' ～ ', $period) . '日別工数集計_' . date('YmdHis');
         } else {
-            $filename = '日報_' . date('YmdHis');
+            $filename = '日別工数集計_' . date('YmdHis');
         }
 
         $response = $this->response;
@@ -467,8 +467,8 @@ class DayWorksController extends AppController
                         $product = Hash::get($product, '0');
                         $work = Hash::extract($WorkCodes, "{n}[id={$work_code}]");
                         $work = Hash::get($work, '0');
-    
-                        foreach (range('A', 'F') as $col) {                            
+
+                        foreach (range('A', 'F') as $col) {
                             if ($col === 'A') {
                                 $sheet->setCellValue("{$col}{$index}", $product_code);
                             } elseif ($col === 'B') {
@@ -480,14 +480,14 @@ class DayWorksController extends AppController
                             } elseif ($col === 'E') {
                                 $sheet->setCellValue("{$col}{$index}", $rep ?? "");
                             } elseif ($col === 'F') {
-                                $text = ""; 
+                                $text = "";
                                 if (!empty($product)) {
                                     $text = $product->can ? "{$product->can} : {$product->title}" : "";
                                 }
                                 $sheet->setCellValue("{$col}{$index}", $text);
                             }
                         }
-    
+
                         $index++;
                     }
                 }
@@ -554,7 +554,7 @@ class DayWorksController extends AppController
             $ProductCodes = $MasterProductCodesTable->find()->toArray();
             $WorkCodes = $MasterWorkCodesTable->find()->toArray();
 
-            $index = 2;            
+            $index = 2;
             $totalAll = 0;
             foreach ($reports as $product_code => $report_list) {
                 foreach ($report_list as $product_id => $report) {
@@ -566,10 +566,10 @@ class DayWorksController extends AppController
                         // pr($product);
                         // pr($work);
                         // pr($rep);
-    
+
                         $total = 0;
                         foreach (range('A', $lastKey) as $col) {
-                            
+
                             if ($col === 'A') {
                                 $sheet->setCellValue("{$col}{$index}", $product_code);
                             } elseif ($col === 'B') {
@@ -587,7 +587,7 @@ class DayWorksController extends AppController
                                 }
                             }
                         }
-    
+
                         $index++;
                         $totalAll = (double) $totalAll + (double) $total;
                     }
@@ -602,7 +602,6 @@ class DayWorksController extends AppController
         // exit;
     }
 
-    
     // トータル＆日別共通：データ取得
     private function _getData()
     {
@@ -648,7 +647,7 @@ class DayWorksController extends AppController
         $query = $this->Authorization->applyScope($table->find('search', [
             'search' => $conditions,
             'collection' => DayWorksCollection::class
-        ])->contain($associated)->order(['DayWorks.Work_date' => 'asc', 'DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
+        ])->contain($associated)->order(['DayWorks.work_date' => 'asc', 'DayWorks.created' => 'desc', 'DayWorks.modified' => 'desc']), 'index');
 
         /** @var \App\Model\Entity\DayWorks[] $data  */
         $data = $query->all()->toArray();
