@@ -433,17 +433,17 @@ const Index = () => {
                     onDragEnd={onDragEnd}
                 />
             ) : (
-            <PaginationTable
-                  table={table}
-                  collection={collection}
-                  setPagination={setPagination}
-                  pageNumber={pageNumber}
-                  isLoading={isLoading}
+                <PaginationTable
+                    table={table}
+                    collection={collection}
+                    setPagination={setPagination}
+                    pageNumber={pageNumber}
+                    isLoading={isLoading}
 
-                  isCsvDownload={true}
-                  csvDownloadLink={csvLink}
-                  csvAllDownloadLink={csvDailyLink}
-              />
+                    isCsvDownload={true}
+                    csvDownloadLink={csvLink}
+                    csvAllDownloadLink={csvDailyLink}
+                />
             )}
         </Box>
     );

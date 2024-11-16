@@ -138,7 +138,7 @@ class MasterWorkCodesController extends AppController
         // $associated = [];
         // $status->setStatusOptions(['copyAssociated' => $associated, 'forceContain' => []]);
 
-         $this->set('data', $status->status($this));
+        $this->set('data', $status->status($this));
     }
 
     /**
@@ -152,6 +152,6 @@ class MasterWorkCodesController extends AppController
 
         // 必要なマスタデータ等を追加していく
 
-         $this->set('data', $data);
+        $this->set('data', $data);
     }
 }

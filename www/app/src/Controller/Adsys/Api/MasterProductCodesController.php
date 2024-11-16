@@ -117,7 +117,6 @@ class MasterProductCodesController extends AppController
             'valueField' => 'id'
         ])->where(['status' => 'published'])->all()->toArray();
 
-
         if ($ids) {
             $table->setStatus(['ids' => array_values($ids), 'status' => "published"], $this->Authentication->getIdentityData('role'),);
         }

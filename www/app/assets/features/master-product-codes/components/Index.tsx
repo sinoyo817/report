@@ -67,10 +67,10 @@ const Index = () => {
         filters: getContentsFilter(),
     });
 
-      const [isDnd, setIsDnd] = useBoolean();
+    const [isDnd, setIsDnd] = useBoolean();
 
-      const initialCsvLink = `${adminPrefix}api/master-product-codes/csv-download`;
-      const [csvLink, setcsvLink] = useState<string>(initialCsvLink);
+    const initialCsvLink = `${adminPrefix}api/master-product-codes/csv-download`;
+    const [csvLink, setcsvLink] = useState<string>(initialCsvLink);
 
     const [rowSelection, setRowSelection] = useState({});
 
@@ -83,7 +83,7 @@ const Index = () => {
     const columnHelper = createColumnHelper<MasterProductCodeType>();
 
     const columns = useMemo<ColumnDef<MasterProductCodeType>[]>(() => {
-         const commonColumn = [];
+    const commonColumn = [];
         commonColumn.push(
             columnHelper.accessor("cid", {
                 id: "cid",
@@ -91,10 +91,10 @@ const Index = () => {
                     return info.getValue();
                 },
                 header: () => <span>ID</span>,
-                 
+
             }) as ColumnDef<MasterProductCodeType>
         );
-         commonColumn.push(
+        commonColumn.push(
             columnHelper.accessor("title", {
                 id: "title",
                 cell: ({ row }) => {
@@ -117,26 +117,26 @@ const Index = () => {
             }) as ColumnDef<MasterProductCodeType>
         );
         commonColumn.push(
-           columnHelper.accessor("code", {
-               id: "code",
-               cell: ({ row }) => {
-                   const onSubmit = async (nextValue: string) => {
-                       await updateMutation.mutateAsync({
-                           data: { ...row.original, code: nextValue },
-                           id: row.original.id,
-                       });
-                   };
+            columnHelper.accessor("code", {
+                id: "code",
+                cell: ({ row }) => {
+                    const onSubmit = async (nextValue: string) => {
+                        await updateMutation.mutateAsync({
+                            data: { ...row.original, code: nextValue },
+                            id: row.original.id,
+                        });
+                    };
 
-                   return (
-                       <EditableCell
-                           field={row.original.code}
-                           onSubmit={onSubmit}
-                       />
-                   );
-               },
-               header: () => <span>予算コード</span>,
-               // footer: (info) => info.column.id,
-           }) as ColumnDef<MasterProductCodeType>
+                    return (
+                        <EditableCell
+                            field={row.original.code}
+                            onSubmit={onSubmit}
+                        />
+                    );
+                },
+                header: () => <span>予算コード</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<MasterProductCodeType>
         );
         commonColumn.push(
             columnHelper.accessor("can", {
@@ -184,7 +184,6 @@ const Index = () => {
                 id: "public",
                 cell: (info) => {
                     const data = info.getValue();
-                     
 
                     return <StatusCell status={data} />;
                 },
@@ -203,19 +202,18 @@ const Index = () => {
         ];
     }, [isDnd,meta, data]);
 
-     
-      useEffect(() => {
-          const param = getContentsFilter();
-          if (param) {
-              const queryString = Object.keys(param)
-                  .filter((key) => key !== "page" && key !== "limit")
-                  .map((key) => key + "=" + param[key])
-                  .join("&");
-              if (queryString) {
-                  setcsvLink(`${initialCsvLink}?${queryString}`);
-              }
-          }
-      }, [getContentsFilter, initialCsvLink]);
+    useEffect(() => {
+        const param = getContentsFilter();
+        if (param) {
+            const queryString = Object.keys(param)
+                .filter((key) => key !== "page" && key !== "limit")
+                .map((key) => key + "=" + param[key])
+                .join("&");
+            if (queryString) {
+                setcsvLink(`${initialCsvLink}?${queryString}`);
+            }
+        }
+    }, [getContentsFilter, initialCsvLink]);
 
     useEffect(() => {
         setRowSelection({});

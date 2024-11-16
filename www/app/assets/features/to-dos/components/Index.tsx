@@ -13,11 +13,11 @@ import {
 import {
     ColumnDef,
     createColumnHelper,
-    
+
     getCoreRowModel,
-    
+
     getFilteredRowModel,
-    
+
     useReactTable,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -31,11 +31,11 @@ import { FormProvider } from "@/providers/form";
 import Search from "./Search";
 import { CrudLinkCell } from "@/features/misc/components/CrudLinkCell";
 import { useFilterParams } from "@/features/misc/hooks/useFilterParams";
- 
+
 import PageLimitSelect from "@/components/elements/Misc/PageLimitSelect";
 
 import { useToDoMeta } from "../api/getToDoMeta";
- 
+
 import { useUpdateToDo } from "../api/updateToDo";
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { DndTable } from "@/components/elements/Table/DndTable";
@@ -107,7 +107,7 @@ const Index = () => {
                 id: "created",
                 cell: (info) => {
                     const data = info.getValue();
-                    
+
                     if (data) {
                         return <>{data}</>;
                     }
@@ -115,32 +115,32 @@ const Index = () => {
                 header: () => <span>作成日時</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<ToDoType>
-        ); 
+        );
         commonColumn.push(
-           columnHelper.accessor("modified", {
-               id: "modified",
-               cell: (info) => {
-                   const data = info.getValue();
+            columnHelper.accessor("modified", {
+                id: "modified",
+                cell: (info) => {
+                    const data = info.getValue();
 
-                   if (data) {
-                       return <>{data}</>;
-                   }
-               },
-               header: () => <span>最終更新日時</span>,
-               // footer: (info) => info.column.id,
-           }) as ColumnDef<ToDoType>
-       );
+                    if (data) {
+                        return <>{data}</>;
+                    }
+                },
+                header: () => <span>最終更新日時</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<ToDoType>
+        );
 
-         if (isDnd) {
+        if (isDnd) {
             return commonColumn;
         }
-      
+
         return [TableCheckbox<ToDoType>(columnHelper), ...commonColumn];
     }, [isDnd,meta,data]);
-      
+
     useEffect(() => {
         setRowSelection({});
-    }, [pageNumber, isDnd, pageLimit]); 
+    }, [pageNumber, isDnd, pageLimit]);
 
     const table = useReactTable({
         data: data?.data || [],
@@ -181,21 +181,21 @@ const Index = () => {
             <FormProvider>
                 <Search />
             </FormProvider>
-            
-            <SimpleGrid columns={2} w="25%">                     
+
+            <SimpleGrid columns={2} w="25%">
                 <PageLimitSelect
                     pageLimit={pageLimit}
                     setPageLimit={setPageLimit}
-                />                
+                />
             </SimpleGrid>
-            
+
             <PaginationTable
-                  table={table}
-                  collection={collection}
-                  setPagination={setPagination}
-                  pageNumber={pageNumber}
-                  isLoading={isLoading}
-              />     
+				table={table}
+				collection={collection}
+				setPagination={setPagination}
+				pageNumber={pageNumber}
+				isLoading={isLoading}
+			/>
         </Box>
     );
 };
