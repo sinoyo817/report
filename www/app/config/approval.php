@@ -30,9 +30,6 @@ $allStatus = [
     $allStatusKey['copiedKey'] => 'コピー',
     $allStatusKey['publishedReqKey'] => '公開申請',
     $allStatusKey['unpublishedReqKey'] => '非公開申請',
-    // $allStatusKey['unsupportedtKey'] => '未処理',
-    // $allStatusKey['supportedtKey'] => '対応中',
-    // $allStatusKey['finishedKey'] => '対応完了',
 ];
 
 $allActionKey = [
@@ -93,18 +90,6 @@ $allApprovalActions = [
         'status' => $allStatusKey['unpublishedReqKey'],
         'actions' => [],
     ],
-    // [   // 未処理
-    //     'status' => $allStatusKey['unsupportedtKey'],
-    //     'actions' => [],
-    // ],
-    // [   // 対応中
-    //     'status' => $allStatusKey['supportedtKey'],
-    //     'actions' => [$allActionKey['toPublishKey']],
-    // ],
-    // [   // 対応完了
-    //     'status' => $allStatusKey['finishedKey'],
-    //     'actions' => [$allActionKey['toPrivateKey']],
-    // ],
 ];
 
 $allApprovalStatusOption = [
@@ -267,6 +252,7 @@ $allStatusOptionKey = [
     'requestAdminKey' => 'reqeustAdmin',
     'requestEditorKey' => 'reqeustEditor',
     'requestReportKey' => 'reqeustReport',
+    'dayReportKey' => 'daytReport',
 ];
 
 $allStatusOptionTitle = [
@@ -276,6 +262,7 @@ $allStatusOptionTitle = [
     $allStatusOptionKey['requestAdminKey'] => '管理者承認処理',
     $allStatusOptionKey['requestEditorKey'] => '編集者用承認処理',
     $allStatusOptionKey['requestReportKey'] => '未対応/対応中/完了',
+    $allStatusOptionKey['dayReportKey'] => '工数用',
 ];
 
 $allStatusOption = [
@@ -326,6 +313,10 @@ $allStatusOption = [
         $allApprovalStatusOption[$allStatusKey['copiedKey']],
         $allApprovalStatusOption[$allStatusKey['deletedKey']],
     ],
+    $allStatusOptionKey['dayReportKey'] => [
+        $allApprovalStatusOption[$allStatusKey['copiedKey']],
+        $allApprovalStatusOption[$allStatusKey['deletedKey']],
+    ],
 ];
 
 $allRolesKey = [
@@ -342,17 +333,23 @@ $roles = [
     $allRolesKey['adminKey'] => [
         'statusOptions' => [
             'default' => $allStatusOptionKey['defaultKey'],
-            'Admins' => $allStatusOptionKey['adminKey'],
+            'admins' => $allStatusOptionKey['adminKey'],
+            'day-works' => $allStatusOptionKey['dayReportKey'],
+            'to-dos' => $allStatusOptionKey['requestReportKey'],
         ],
         'requireRoutesKey' => [
-            "topics",
-            "events",
-            "freepages",
+            "day-works",
+            "to-dos",
+            "master-product-codes",
+            "master-work-codes","admins"
         ],
     ],
     $allRolesKey['editorKey'] => [
         'statusOptions' => [
             'default' => $allStatusOptionKey['requestEditorKey'],
+            'admins' => $allStatusOptionKey['adminKey'],
+            'day-works' => $allStatusOptionKey['dayReportKey'],
+            'to-dos' => $allStatusOptionKey['requestReportKey'],
         ],
         'requireRoutesKey' => [
             "topics",
