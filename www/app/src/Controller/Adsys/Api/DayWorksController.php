@@ -199,7 +199,7 @@ class DayWorksController extends AppController
         $associated = ['Blocks', 'Metadatas'];
         $status->setStatusOptions(['copyAssociated' => $associated, 'forceContain' => []]);
 
-         $this->set('data', $status->status($this));
+        $this->set('data', $status->status($this));
     }
 
     /**
@@ -229,16 +229,19 @@ class DayWorksController extends AppController
 
         $table = $this->fetchTable('MasterProductCodes');
         $ProductCodes = $table->find()->find('public')->select(['id', 'title'])->where($conditions)->order(['sequence ASC']);
+        $table->changePrivate();
+        $PrivateProductCodes = $table->find()->select(['id', 'title'])->where($conditions)->order(['sequence ASC']);
 
         $table = $this->fetchTable('MasterWorkCodes');
         $WorkCodes = $table->find()->find('public')->select(['id', 'title'])->order(['sequence ASC']);
 
         $data = [
             'master_product_codes' => $ProductCodes,
+            'private_master_product_codes' => $PrivateProductCodes,
             'master_work_codes' => $WorkCodes,
         ];
 
-         $this->set('data', $data);
+        $this->set('data', $data);
     }
 
     public function report()
@@ -253,7 +256,7 @@ class DayWorksController extends AppController
         ];
 
         $table = $this->fetchTable();
-        
+
         if($id && $table->exists(["DayWorks.id" => $id])) {
             $data = $table->findById($id)->contain($associated)->firstOrFail();
 
@@ -548,9 +551,7 @@ class DayWorksController extends AppController
                     }
                 }
             }
-// pr($totalCell);
-// pr($reports);
-// exit;
+
             $ProductCodes = $MasterProductCodesTable->find()->toArray();
             $WorkCodes = $MasterWorkCodesTable->find()->toArray();
 
@@ -563,9 +564,6 @@ class DayWorksController extends AppController
                         $product = Hash::get($product, '0');
                         $work = Hash::extract($WorkCodes, "{n}[id={$work_code}]");
                         $work = Hash::get($work, '0');
-                        // pr($product);
-                        // pr($work);
-                        // pr($rep);
 
                         $total = 0;
                         foreach (range('A', $lastKey) as $col) {

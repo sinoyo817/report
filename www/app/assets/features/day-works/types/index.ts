@@ -21,7 +21,7 @@ export type DayWorkType = {
     end_time: string;
     send_text: string;
     report: string;
-    
+
     blocks: BaseBlockEntityType[];
     metadata?: MetadataType | null;
     create_admin?: AdminType;
@@ -31,7 +31,7 @@ export type DayWorkType = {
 
     sequence: number;
     total: string;
-      
+
 } & BaseEntityType;
 
 export type DayWorkListType = {
@@ -62,6 +62,7 @@ export type DayWorkFilterParamType = CommonFilterParamType;
  */
 export type DayWorkMetaType = MetaUtilityType & {
     master_product_codes?: BaseSelectOptions[];
+    private_master_product_codes?: BaseSelectOptions[];
     master_work_codes?: BaseSelectOptions[];
     admins?: BaseSelectOptions[];
 };
