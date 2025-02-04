@@ -137,10 +137,10 @@ const Index = () => {
                 id: "send_text",
                 cell: (info) => {
                     const blocks = info.row.original.blocks;
-                    if (meta && meta.master_product_codes) {
+                    if (meta && meta.private_master_product_codes) {
                         const text = sendText(
                             blocks,
-                            meta.master_product_codes,
+                            meta.private_master_product_codes,
                         );
                         // return <pre style={{ textAlign: 'left', margin: 0 }}>{text}</pre>;
                         return <div style={{ whiteSpace: 'pre-wrap', textAlign: 'left', margin: 0 }}>{text}</div>;
