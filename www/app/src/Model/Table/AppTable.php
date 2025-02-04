@@ -7,6 +7,7 @@ namespace App\Model\Table;
 use Cake\Chronos\Chronos;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use Cake\Datasource\EntityInterface;
 
 /**
  * AppTable
@@ -322,6 +323,39 @@ class AppTable extends Table
                 $this->changePrivate();
             }
             $this->addBehavior('ADmad/Sequence.Sequence', $sequenceBehaviorConfig);
+        }
+    }
+
+    // 新規記事を一番前に持ってっ来る関数
+    // afterSaveにすると公開処理時にもisNew判定で動いてしまうので、関数にして適宜addから呼ぶ
+    public function changeSequence(EntityInterface $entity)
+    {
+        //新規登録時
+        if ($this->getApprovalMode() == 'Private' && $entity->isNew()) {
+            //idあれば
+            if ($entity->id) {
+                //id配列に入れる
+                $reorder = [$entity->id];
+                // 該当記事以外のidを配列で取る
+                $ids = $this->find()
+                    ->select(['id'])
+                    ->where(['id NOT IN'=>[$entity->id]])
+                    ->order([
+                        'sequence'=>'ASC',
+                        'modified'=>'DESC'
+                    ])
+                    ->all()
+                    ->extract('id')
+                    ->toArray();
+
+                //他記事あればid入れた配列渡してsetOrderで並び替え
+                if (!empty($ids)) {
+                    $reorders =  array_merge($reorder, $ids);
+                    $this->setOrder(
+                        $reorders
+                    );
+                }
+            }
         }
     }
 

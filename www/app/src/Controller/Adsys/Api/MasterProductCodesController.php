@@ -87,6 +87,12 @@ class MasterProductCodesController extends AppController
         //     'associated' => $associated
         // ]);
 
+        // 普通に登録すると新規記事が一番後ろに来るので並び替える
+        $table = $this->fetchTable();
+        $table->getEventManager()->on('Model.afterSave', ['priority' => 3], function (EventInterface $event, EntityInterface $entity) use ($table) {
+            $this->MasterProductCodes->changeSequence($entity);
+    });
+
         $this->set('data', $create->save($this));
     }
 

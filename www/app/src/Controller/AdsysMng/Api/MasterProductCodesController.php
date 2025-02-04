@@ -11,6 +11,8 @@ use Medii\Crud\Interfaces\ReadInterface;
 use Medii\Crud\Interfaces\SearchInterface;
 use Medii\Crud\Interfaces\StatusInterface;
 use Medii\Crud\Interfaces\UpdateInterface;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 
 /**
  * MasterProductCodes Controller
@@ -56,6 +58,12 @@ class MasterProductCodesController extends AppController
         // $create->setPatchEntityOptions([
         //     'associated' => $associated
         // ]);
+
+        // 普通に登録すると新規記事が一番後ろに来るので並び替える
+        $table = $this->fetchTable();
+        $table->getEventManager()->on('Model.afterSave', ['priority' => 3], function (EventInterface $event, EntityInterface $entity) use ($table) {
+            $this->MasterProductCodes->changeSequence($entity);
+        });
 
         $this->set('data', $create->save($this));
     }
