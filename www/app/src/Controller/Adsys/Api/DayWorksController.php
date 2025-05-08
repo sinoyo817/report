@@ -25,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Csv as WriterCsv;
 
 use Cake\Collection\Collection;
 use Cake\Chronos\Chronos;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 /**
  * DayWorks Controller
@@ -382,9 +383,12 @@ class DayWorksController extends AppController
 
     /**
      * getHeaderCell function
+     * ヘッダ行のデータを返す
      *
-     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
-     * @return void
+     * @param bool $is_daily 日別かどうか
+     * @param array $results データ行の元データ
+     * @param string|null $lastKey 最終列のキー（例："E"）
+     * @return array ヘッダ行データ
      * トータル＆日別共通：ヘッダ取得
      */
     private function _getHeaderCell($is_daily=false, $results=[], $lastKey=null)
@@ -566,7 +570,14 @@ class DayWorksController extends AppController
                         $work = Hash::get($work, '0');
 
                         $total = 0;
-                        foreach (range('A', $lastKey) as $col) {
+
+                        // range('A', $lastKey)は1文字目しか見ないのでうまくいかない。Coordinateでセルを数値にフォーマットする
+                        $startCol = 1; // 'A' = 1
+                        $endCol = Coordinate::columnIndexFromString($lastKey); // 'AA' → 27 など
+                        for ($colIndex = $startCol; $colIndex <= $endCol; $colIndex++) {
+                        // foreach (range('A', $lastKey) as $col) {
+                            // 数値にフォーマットしたものを文字列に再度フォーマット
+                            $col = Coordinate::stringFromColumnIndex($colIndex); // 'A', 'B', ..., 'AA', etc.
 
                             if ($col === 'A') {
                                 $sheet->setCellValue("{$col}{$index}", $product_code);
