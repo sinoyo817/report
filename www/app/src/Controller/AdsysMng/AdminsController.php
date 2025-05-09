@@ -369,6 +369,45 @@ class AdminsController extends AppController
                 'forSearch' => false,
             ],
         ];
+        $toDosStatusOptions = [
+            [
+                'title' => __d("admin", "未処理"),
+                'status' => Configure::read('Approvals.allStatusKey.draftKey'),
+                'sequence' => 5,
+                'forSelect' => true,
+                'forSearch' => true,
+                'colorScheme' => 'purple',
+            ],
+            [
+                'title' => __d("admin", "対応中"),
+                'status' => Configure::read('Approvals.allStatusKey.publishedKey'),
+                'sequence' => 1,
+                'forSelect' => true,
+                'forSearch' => true,
+                'colorScheme' => 'green',
+            ],
+            [
+                'title' => __d("admin", "対応完了"),
+                'status' => Configure::read('Approvals.allStatusKey.unpublishedKey'),
+                'sequence' => 2,
+                'forSelect' => true,
+                'forSearch' => true,
+            ],
+            [
+                'title' => __d("admin", "コピー"),
+                'status' => Configure::read('Approvals.allStatusKey.copiedKey'),
+                'sequence' => 10,
+                'forSelect' => true,
+                'forSearch' => false,
+            ],
+            [
+                'title' => __d("admin", "削除"),
+                'status' => Configure::read('Approvals.allStatusKey.deletedKey'),
+                'sequence' => 20,
+                'forSelect' => true,
+                'forSearch' => false,
+            ],
+        ];
 
         $meta = [
             'redirectUri' => $this->Authentication->getLoginRedirect() ? Router::url($this->Authentication->getLoginRedirect()) : Router::url(['controller' => 'Pages', 'action' => 'index']),
@@ -378,6 +417,7 @@ class AdminsController extends AppController
                 'admins' => $enableStatusOptions,
                 'files' => $fileStatusOptions,
                 'assets' => $assetStatusOptions,
+                'to-dos' => $toDosStatusOptions,
             ],
         ];
 
