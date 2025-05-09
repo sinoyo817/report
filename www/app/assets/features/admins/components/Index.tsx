@@ -53,6 +53,19 @@ const Index = () => {
                 header: () => <span>名前</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<AdminType>,
+
+            columnHelper.accessor("master_group", {
+                id: "master_group",
+                cell: (info) => {
+                    const data = info.getValue();
+                    if (data) {
+                        return <>{data.title}</>;
+                    }
+                },
+                header: () => <span>所属G</span>,
+
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<AdminType>,
             columnHelper.accessor("role", {
                 id: "role",
                 cell: (info) => <RoleCell role={info.getValue()} />,

@@ -45,6 +45,8 @@ class Admin extends AppEntity
         'password' => true,
         'password_new' => true,
         'password_confirm' => true,
+        'group_id' => true,
+        'master_group' => true,
         'note' => true,
         'role' => true,
         'email' => true,
@@ -55,7 +57,7 @@ class Admin extends AppEntity
         'modified' => true,
         'id' => true,
         'cid' => true,
-        'superuser' => false
+        'superuser' => false,
     ];
 
     protected $_virtual = ['admin_id', 'user_id', 'title'];

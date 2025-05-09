@@ -36,8 +36,8 @@ class AdminsController extends AppController
      */
     public function index(SearchInterface $search)
     {
-        // $associated = [];
-        // $search->setfindOptions(['contain' => $associated]);
+        $associated = ['MasterGroup'];
+        $search->setfindOptions(['contain' => $associated]);
         $this->set('data', $search->search($this));
     }
 
@@ -154,8 +154,12 @@ class AdminsController extends AppController
             ];
         }
 
+        $table = $this->fetchTable('MasterGroups');
+        $groups = $table->find()->find('public')->select(['id', 'title'])->order(['sequence ASC']);
+
         $data = [
             'role' => $role,
+            'groups' => $groups,
         ];
 
         // 必要なマスタデータ等を追加していく

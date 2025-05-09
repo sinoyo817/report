@@ -70,6 +70,26 @@ const Form = (props: FormPropType) => {
                     }))
                 }
             />
+            <BaseSelectField<AdminFormValuesType>
+                id="group_id"
+                formType="select"
+                model={model}
+                isConfirm={isConfirm}
+                label="所属G"
+                placeholder="---"
+                defaultValue=""
+                // formControlOptions={{ isRequired: true }}
+                // rule={{
+                //     required: "所属Gを選択してください",
+                // }}
+                multipleValueOptions={
+                    meta?.groups &&
+                    meta.groups.map((item) => ({
+                        label: item.title,
+                        value: item.id,
+                    }))
+                }
+            />
             <BaseInputField<AdminFormValuesType>
                 id="email"
                 formType="input"

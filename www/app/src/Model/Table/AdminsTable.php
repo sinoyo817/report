@@ -47,6 +47,11 @@ class AdminsTable extends AppTable
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
+        // 所属グループ
+        $this->belongsTo('MasterGroup')
+            ->setClassName('MasterGroups')
+            ->setForeignKey('group_id');
+
         $this->addBehavior('Medii/Approval.Approval', [
             'approvalTables' => [],
         ]);

@@ -32,14 +32,16 @@ class ReportMailer extends Mailer
      *
      * @return void
      */
-    public function sendReport($data, $ProductCodes)
+    public function sendReport($data, $ProductCodes, $mail)
     {
+        $toMail = $mail ?? Configure::read('CustomSettings.General.toMail');
+
         $this->viewBuilder()->setTemplate('report');
 
         $this->setProfile('default')
             ->setFrom(Configure::read('CustomSettings.General.fromMail'), $data->create_admin->title)
             ->setSender(Configure::read('CustomSettings.General.fromMail'), $data->create_admin->title)
-            ->setTo(Configure::read('CustomSettings.General.toMail'))
+            ->setTo($toMail)
             ->setSubject("{$data->work_date->format('Y/m/d')} 日報（{$data->create_admin->title}）")
             ->setViewVars(['data' => $data, 'ProductCodes' => $ProductCodes]);
     }

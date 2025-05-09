@@ -253,7 +253,7 @@ class DayWorksController extends AppController
             'Blocks' => function (Query $q) {
                 return $q->where(['value04' => '1'])->distinct('value01');
             },
-            'CreateAdmins'
+            'CreateAdmins',
         ];
 
         $table = $this->fetchTable();
@@ -261,10 +261,17 @@ class DayWorksController extends AppController
         if($id && $table->exists(["DayWorks.id" => $id])) {
             $data = $table->findById($id)->contain($associated)->firstOrFail();
 
-            $table = $this->fetchTable('MasterProductCodes');
-            $ProductCodes = $table->find('list')->select(['id', 'title'])->toArray();
+            $groupTable = $this->fetchTable('MasterGroups');
+            if($data->create_admin->group_id && $groupTable->exists(["MasterGroups.id" => $data->create_admin->group_id])) {
+                $group = $groupTable->find()->find('public')->where(["MasterGroups.id" => $data->create_admin->group_id])->firstOrFail();
 
-            $this->getMailer('Report')->send('sendReport', [$data, $ProductCodes]);
+                if (!empty($group) && !empty($group->email)) {
+                    $table = $this->fetchTable('MasterProductCodes');
+                    $ProductCodes = $table->find('list')->select(['id', 'title'])->toArray();
+
+                    $this->getMailer('Report')->send('sendReport', [$data, $ProductCodes, $group->email]);
+                }
+            }
         }
 
         return $this->redirect(['controller' => 'DayWorks' , 'action' => 'index', 'prefix' => 'Adsys']);
