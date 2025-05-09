@@ -336,12 +336,15 @@ $roles = [
             'admins' => $allStatusOptionKey['adminKey'],
             'day-works' => $allStatusOptionKey['dayReportKey'],
             'to-dos' => $allStatusOptionKey['requestReportKey'],
+            'master-groups' => $allStatusOptionKey['adminKey'],
         ],
         'requireRoutesKey' => [
             "day-works",
             "to-dos",
             "master-product-codes",
-            "master-work-codes","admins"
+            "master-work-codes",
+            "admins",
+            "master-groups",
         ],
     ],
     $allRolesKey['editorKey'] => [

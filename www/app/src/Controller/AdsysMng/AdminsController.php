@@ -224,6 +224,11 @@ class AdminsController extends AppController
                         'to' => './admins',
                         'key' => 'admins',
                     ],
+                    [
+                        'name' => __('グループ管理'),
+                        'to' => './master-groups',
+                        'key' => 'master-groups',
+                    ],
                 ],
             ],
             [

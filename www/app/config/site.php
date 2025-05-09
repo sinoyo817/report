@@ -30,6 +30,7 @@ return [
                 "masterTopicCategoriesKey" => "MasterTopicCategories",
                 "masterEventCategoriesKey" => "MasterEventCategories",
                 "masterContactCategoriesKey" => "MasterContactCategories",
+                "masterGroups" => "MasterGroups",
             ],
             "ContentsList" => [
                 "DayWorks" => "工数",
@@ -46,6 +47,7 @@ return [
                 // "MasterEventCategories" => "観光地・イベントカテゴリ",
                 // "MasterContactCategories" => "お問い合わせカテゴリ",
                 "Admins" => "管理者",
+                "MasterGroups" => "グループ管理",
             ],
             "MenuList" => [
                 "updates" => [
@@ -67,6 +69,7 @@ return [
                 ],
                 "authAccount" => [
                     "Admins",
+                    "MasterGroups",
                 ],
             ],
             "CategoryUseTypeKey" => [
