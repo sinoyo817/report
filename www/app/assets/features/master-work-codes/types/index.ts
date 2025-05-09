@@ -6,7 +6,7 @@ import {
     IgnoreFormFieldsType,
     ResoponseCollectionType,
     MetadataType,
-    
+    CommonAnswerOptions,
     MetaUtilityType,
 } from "@/types";
 
@@ -20,6 +20,21 @@ export type MasterWorkCodeType = {
     start_date: string;
     end_date: string;
     sequence: number;
+    create_admin?: AdminType;
+    create_user?: AdminType;
+    modified_admin?: AdminType;
+    modified_user?: AdminType;
+    is_use: keyof CommonAnswerOptions;
+    user_id: string;
+} & BaseEntityType;
+
+/**
+ * 追加していく
+ */
+export type UseCodeType = {
+    is_use: keyof CommonAnswerOptions;
+    master_work_code_id: string;
+    user_id: string;
     create_admin?: AdminType;
     create_user?: AdminType;
     modified_admin?: AdminType;
@@ -52,5 +67,6 @@ export type MasterWorkCodeFilterParamType = CommonFilterParamType;
  * {master_category : BaseSelectOptions[] } & MetaUtilityType
  *
  */
-export type MasterWorkCodeMetaType = MetaUtilityType;
-
+export type MasterWorkCodeMetaType = {
+    use_codes?: any;
+} & MetaUtilityType;

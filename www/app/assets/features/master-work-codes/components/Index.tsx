@@ -14,9 +14,9 @@ import {
 } from "@chakra-ui/react";
 import {
     ColumnDef,
-    createColumnHelper,    
-    getCoreRowModel,    
-    getFilteredRowModel,    
+    createColumnHelper,
+    getCoreRowModel,
+    getFilteredRowModel,
     useReactTable,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -42,13 +42,18 @@ import { useUpdateMasterWorkCode } from "../api/updateMasterWorkCode";
 import { EditableCell } from "@/components/elements/Misc/EditerbleCell";
 
 import { useMasterWorkCodeMeta } from "../api/getMasterWorkCodeMeta";
- 
+
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { DndTable } from "@/components/elements/Table/DndTable";
- 
+
 import PageLimitSelect from "@/components/elements/Misc/PageLimitSelect";
 
-import { adminPrefix } from "@/config"; 
+import { adminPrefix } from "@/config";
+import UseCell from "@/features/misc/components/UseCell";
+
+import { CommonAnswerOptions } from "@/types";
+import { useOnlyUpdateWorkCodes } from "../api/onlyUpdateWorkCodes";
+import { useAuth } from "@/lib/auth";
 
 const Index = () => {
     const {
@@ -77,6 +82,8 @@ const Index = () => {
     const { data: meta } = useMasterWorkCodeMeta();
 
     const columnHelper = createColumnHelper<MasterWorkCodeType>();
+
+    const mutation = useOnlyUpdateWorkCodes();
 
     const columns = useMemo<ColumnDef<MasterWorkCodeType>[]>(() => {
          const commonColumn = [];
@@ -109,6 +116,35 @@ const Index = () => {
                 },
                 header: () => <span>作業内容</span>,
                 // footer: (info) => info.column.id,
+            }) as ColumnDef<MasterWorkCodeType>
+        );
+        commonColumn.push(
+            columnHelper.display({
+                id: "is_use",
+                cell: ({ row }) => {
+                    const onSubmit = async (
+                        nextValue: keyof CommonAnswerOptions
+                    ) => {
+                        await mutation.mutateAsync({
+                            data: {
+                                id: row.original.id,
+                                is_use: nextValue,
+                            },
+                            id: row.original.id,
+                        });
+                    };
+
+                    // meta.use_codesに含まれているかどうかで初期値を決定
+                    const isUsed = meta?.use_codes?.includes(row.original.id);
+                    const field: keyof CommonAnswerOptions = isUsed ? "yes" : "no";
+                    return (
+                        <UseCell
+                            field={field}
+                            onSubmit={onSubmit}
+                        />
+                    );
+                },
+                header: () => <span>利用有無</span>,
             }) as ColumnDef<MasterWorkCodeType>
         );
         commonColumn.push(

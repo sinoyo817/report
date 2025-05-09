@@ -76,6 +76,43 @@ class MasterWorkCodesController extends AppController
     }
 
     /**
+     * OnlyEdit method
+     *
+     * @param \Medii\Crud\Interfaces\UpdateInterface $update
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function onlyEdit(UpdateInterface $update)
+    {
+        $this->viewBuilder()->setOption('serialize', 'data');
+
+        $id = $this->getRequest()->getData('id');
+        $is_use = $this->getRequest()->getData('is_use');
+        $user_id = $this->Authentication->getIdentityData('id');
+
+        $table = $this->fetchTable('UseCodes');
+        $entity = $table->find()
+            ->where([
+                'master_work_code_id' => $id,
+                'created_by_admin' => $user_id
+            ])
+            ->first();
+
+        if ($is_use === "yes") {
+            if (!$entity) {
+                $entity = $table->newEmptyEntity();
+                $entity->master_work_code_id = $id;
+
+                $table->saveOrFail(($entity));
+            }
+        } else {
+            if ($entity) {
+                $table->delete($entity);
+            }
+        }
+    }
+
+    /**
      * Confirm method
      *
      * @param \Medii\Crud\Interfaces\ConfirmInterface $confirm
@@ -148,9 +185,15 @@ class MasterWorkCodesController extends AppController
      */
     public function metadata()
     {
-        $data = [];
-
         // 必要なマスタデータ等を追加していく
+        $user_id = $this->Authentication->getIdentityData('id');
+        $use_codes = $this->fetchTable('UseCodes')->find()
+            ->select(['master_work_code_id'])
+            ->where(['created_by_admin' => $user_id])
+            ->enableHydration(false)->extract('master_work_code_id')
+            ->toList();
+
+        $data = ["use_codes" => $use_codes];
 
         $this->set('data', $data);
     }

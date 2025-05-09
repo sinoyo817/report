@@ -177,6 +177,16 @@ return static function (RouteBuilder $routes) {
                     ],
                 ]
             ]);
+            $apiBuilder->resources('MasterWorkCodes', [
+                'only' => ['only-edit'],
+                'map' => [
+                    'only-edit' => [
+                        'method' => 'POST',
+                        'action' => 'only-edit',
+                        'path' => '/only-edit/{id}',
+                    ],
+                ]
+            ]);
             $apiBuilder->resources('FreepageDirectories', [
                 'only' => ['all', 'sequence'],
                 'map' => [
@@ -458,6 +468,17 @@ return static function (RouteBuilder $routes) {
                     'locale-settings' => [
                         'method' => 'GET',
                         'action' => 'locale-settings',
+                    ],
+                ]
+            ]);
+
+            $apiBuilder->resources('MasterWorkCodes', [
+                'only' => ['only-edit'],
+                'map' => [
+                    'only-edit' => [
+                        'method' => 'POST',
+                        'action' => 'only-edit',
+                        'path' => '/only-edit/{id}',
                     ],
                 ]
             ]);

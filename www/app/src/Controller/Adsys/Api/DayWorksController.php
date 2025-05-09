@@ -233,8 +233,15 @@ class DayWorksController extends AppController
         $table->changePrivate();
         $PrivateProductCodes = $table->find()->select(['id', 'title'])->where($conditions)->order(['sequence ASC']);
 
+        // 本人が使用するにチェックしている作業のリストを取得
+        $user_id = $this->Authentication->getIdentityData('id');
+        $use_codes = $this->fetchTable('UseCodes')->find()
+            ->select(['master_work_code_id'])
+            ->where(['created_by_admin' => $user_id])
+            ->enableHydration(false)->extract('master_work_code_id')
+            ->toList();
         $table = $this->fetchTable('MasterWorkCodes');
-        $WorkCodes = $table->find()->find('public')->select(['id', 'title'])->order(['sequence ASC']);
+        $WorkCodes = $table->find()->find('public')->select(['id', 'title'])->where(['id IN ' => $use_codes])->order(['sequence ASC']);
 
         $data = [
             'master_product_codes' => $ProductCodes,

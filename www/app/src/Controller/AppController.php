@@ -153,6 +153,7 @@ class AppController extends Controller
     {
 
         $title = $this->Authentication->getIdentityData('title');
+        $id = $this->Authentication->getIdentityData('id');
         $role = $this->Authentication->getIdentityData('role');
 
         $roleData = Configure::read("Roles." . $role) ?? [];
@@ -202,6 +203,7 @@ class AppController extends Controller
         ];
 
         $data = [
+            'id' => $id,
             'title' => $title,
             'meta' => $meta,
         ];

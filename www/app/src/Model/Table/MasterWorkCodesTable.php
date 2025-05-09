@@ -58,6 +58,11 @@ class MasterWorkCodesTable extends AppTable
             'sequenceField' => 'sequence',
         ]);
 
+        $this->hasMany('UseCodes')
+            ->setForeignKey('master_work_code_id')
+            ->setDependent(true)
+            ->setCascadeCallbacks(true);
+
         $fileFields = [];
         $approvalTables = [
             $this,

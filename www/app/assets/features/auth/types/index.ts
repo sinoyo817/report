@@ -2,6 +2,7 @@ import { ApprovalStatusOptionType } from "@/config";
 import { AdminType } from "@/features/admins";
 
 export type AuthType = {
+    id: string;
     title: string;
     meta: AuthMetaType;
 };
