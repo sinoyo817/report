@@ -36,6 +36,7 @@ export type DayWorkType = {
 
     sequence: number;
     total: string;
+    block: string;
 
 } & BaseEntityType;
 

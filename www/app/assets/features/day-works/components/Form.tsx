@@ -11,6 +11,7 @@ import {
     FormLabel,
     Text,
     Wrap,
+    Input,
 } from "@chakra-ui/react";
 import { BaseInputField } from "@/components/Form/BaseInputField";
 import { DayWorkFormValuesType, DayWorkType } from "../types";
@@ -99,7 +100,6 @@ const Form = (props: FormPropType) => {
             <Text color="gray" mb={4}>
                 ※ 日報記載用。工数の集計には影響しない。
             </Text>
-            <Time />
             <BaseBlockField<DayWorkFormValuesType>
                 id="blocks"
                 formType="block"
@@ -109,6 +109,17 @@ const Form = (props: FormPropType) => {
                 label="工数"
                 blockType="works"
                 defaultValue={[]}
+            />
+            <BaseInputField<DayWorkFormValuesType>
+                id="block"
+                formType="input"
+                model={model}
+                isConfirm={isConfirm}
+                label="工数"
+                placeholder="タイトルを入力してください"
+                defaultValue="1"
+                useDefaultLocaleData={true}
+                inputType="hidden"
             />
             <TimeTable />
         </Box>

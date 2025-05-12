@@ -7,6 +7,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * DayWorks Model
@@ -101,6 +102,32 @@ class DayWorksTable extends AppTable
         $validator
             ->date('work_date')
             ->allowEmptyDate('work_date');
+
+        $validator
+            ->add('block', "custom", [
+                'rule' => ['custom', "/^[a-zA-Z0-9_\-]*$/u"],
+                'message' => '※半角英数字で入力してください',
+                'last' => true,
+            ]);
+
+        $validator->add('block', 'custom', [
+            'rule' => function ($value, $context) {
+                if (empty($context['data']['blocks']) || !is_array($context['data']['blocks'])) {
+                    return true; // チェック対象がなければ通す
+                }
+
+                $seen = [];
+                foreach ($context['data']['blocks'] as $block) {
+                    $key = $block['value01'] . '|' . $block['value02'];
+                    if (isset($seen[$key])) {
+                        return false; // 重複あり
+                    }
+                    $seen[$key] = true;
+                }
+                return true;
+            },
+            'message' => '予算コードと作業内容の組み合わせが重複している登録があります',
+        ]);
 
         return $validator;
     }

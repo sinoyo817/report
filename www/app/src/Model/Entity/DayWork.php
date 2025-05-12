@@ -44,5 +44,6 @@ class DayWork extends AppEntity
         'id' => true,
         'blocks' => true,
         'metadata' => true,
+        'block' => true,
     ];
 }
