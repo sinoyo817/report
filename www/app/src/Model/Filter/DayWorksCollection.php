@@ -8,6 +8,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query\SelectQuery;
 use Search\Model\Filter\Base;
 use Search\Model\Filter\FilterCollection;
+use Cake\ORM\Query;
 
 class DayWorksCollection extends FilterCollection
 {
@@ -48,6 +49,29 @@ class DayWorksCollection extends FilterCollection
         $this->add("end_date", 'Search.Callback', [
             'callback' => function (SelectQuery $query, array $args, Base $filter) use ($table) {
                 $query->andWhere(["{$table->getAlias()}.work_date <= " => $args['end_date']]);
+                return true;
+            }
+        ]);
+
+        $this->add("master_product_code", 'Search.Callback', [
+            'callback' => function (Query $query, array $args,  Base $filter) use ($table) {
+                // pr($args);
+                $query->matching('Blocks', function (Query $q) use ($args) {
+                    return $q->where([
+                        'Blocks.value01' => $args['master_product_code']
+                    ]);
+                })->group(["DayWorks.id"]);
+                return true;
+            }
+        ]);
+        $this->add("master_work_code", 'Search.Callback', [
+            'callback' => function (Query $query, array $args,  Base $filter) use ($table) {
+                // pr($args);
+                $query->matching('Blocks', function (Query $q) use ($args) {
+                    return $q->where([
+                        'Blocks.value02' => $args['master_work_code']
+                    ]);
+                })->group(["DayWorks.id"]);
                 return true;
             }
         ]);

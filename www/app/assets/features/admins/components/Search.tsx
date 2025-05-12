@@ -34,11 +34,11 @@ const Search = (props: SearchPropsType) => {
             <BaseFieldWrapper label="キーワード">
                 <Input {...register("q")} />
             </BaseFieldWrapper>
-            <BaseFieldWrapper label="権限">
-                <Select placeholder="---" {...register("role")} w="72">
-                    {meta?.role &&
-                        meta.role.map((item) => (
-                            <option key={item.role} value={item.role}>
+            <BaseFieldWrapper label="所属グループ">
+                <Select placeholder="---" {...register("group_id")} w="72">
+                    {meta?.groups &&
+                        meta.groups.map((item) => (
+                            <option key={item.id} value={item.id}>
                                 {item.title}
                             </option>
                         ))}

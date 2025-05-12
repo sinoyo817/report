@@ -17,9 +17,7 @@ const Search = () => {
         useFilterParams();
     const statusOptions = useStatusOptions({ forSearch: true });
 
-  
-      const { data: meta } = useToDoMeta();
-  
+    const { data: meta } = useToDoMeta();
 
     const { register, reset } = useFormContext<ToDoFilterParamType>();
 
@@ -41,22 +39,6 @@ const Search = () => {
         >
             <BaseFieldWrapper label="キーワード">
                 <Input {...register("q")} />
-            </BaseFieldWrapper>
-            <BaseFieldWrapper label="公開状態">
-                <Select placeholder="---" {...register("public")} w="72">
-                    {statusOptions &&
-                        statusOptions
-                            .filter(
-                                (item) =>
-                                    item.status === "published" ||
-                                    item.status === "unpublished"
-                            )
-                            .map((item) => (
-                                <option key={item.status} value={item.status}>
-                                    {item.title}
-                                </option>
-                            ))}
-                </Select>
             </BaseFieldWrapper>
             <BaseFieldWrapper label="ステータス">
                 <Select placeholder="---" {...register("status")} w="72">

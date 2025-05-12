@@ -326,7 +326,7 @@ $allRolesKey = [
 
 $allRoles = [
     $allRolesKey['adminKey'] => '総合管理者',
-    $allRolesKey['editorKey'] => '編集者',
+    // $allRolesKey['editorKey'] => '編集者',
 ];
 
 $roles = [

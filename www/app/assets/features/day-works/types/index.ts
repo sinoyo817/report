@@ -1,4 +1,6 @@
 import { AdminType } from "@/features/admins";
+import { MasterProductCodeType } from "@/features/master-product-codes";
+import { MasterWorkCodeType } from "@/features/master-work-codes";
 import {
     BaseBlockEntityType,
     BaseEntityType,
@@ -21,6 +23,9 @@ export type DayWorkType = {
     end_time: string;
     send_text: string;
     report: string;
+    master_product_code:MasterProductCodeType
+    master_work_code:MasterWorkCodeType
+
 
     blocks: BaseBlockEntityType[];
     metadata?: MetadataType | null;

@@ -17,6 +17,8 @@ class AdminsCollection extends FilterCollection
 
         $this->value('role');
 
+        $this->value('group_id');
+
         $this->add('q', 'Search.Like', [
             'before' => true,
             'after' => true,

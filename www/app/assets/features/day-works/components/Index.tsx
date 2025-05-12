@@ -32,11 +32,11 @@ import { CrudLinkCell } from "@/features/misc/components/CrudLinkCell";
 import { useFilterParams } from "@/features/misc/hooks/useFilterParams";
 
 import { adminPrefix } from "@/config";
- 
+
 import PageLimitSelect from "@/components/elements/Misc/PageLimitSelect";
 
 import { useDayWorkMeta } from "../api/getDayWorkMeta";
- 
+
 import { useUpdateDayWork } from "../api/updateDayWork";
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { DndTable } from "@/components/elements/Table/DndTable";
@@ -65,7 +65,7 @@ const Index = () => {
 
     const initialCsvDailyLink = `${adminPrefix}api/day-works/csv-daily-download`;
     const [csvDailyLink, setcsvDailyLink] = useState<string>(initialCsvDailyLink);
-    
+
     const initialReportLink = `${adminPrefix}api/day-works/report`;
 
     const [rowSelection, setRowSelection] = useState({});
@@ -244,7 +244,7 @@ const Index = () => {
 
         return [TableCheckbox<DayWorkType>(columnHelper), ...commonColumn];
     }, [isDnd,meta,data]);
-    
+
     // // 全ての作業
     // const allText = (blocks: BaseBlockEntityType[], masterProductCodes: BaseSelectOptions[]) => {
 
@@ -260,10 +260,10 @@ const Index = () => {
     //             return productCodeMap[value01] || '';
     //         }
     //     }).filter(Boolean);
-    
+
     //     return textArray.join("\n");
     // };
-    
+
     // 日報に記載するテキスト
     const sendText = (blocks: BaseBlockEntityType[], masterProductCodes: BaseSelectOptions[]) => {
         // master_product_codesをキーと値のペアに変換
@@ -282,10 +282,10 @@ const Index = () => {
                 }
             }
         }).filter(Boolean);
-    
+
         return textArray.join("\n");
     };
-    
+
     // ブロックvalue03の合計を算出
     const calculateTotal = (blocks: BaseBlockEntityType[]) => {
         return blocks.reduce((sum, block) => {
@@ -299,7 +299,7 @@ const Index = () => {
             return sum;
         }, 0);
     };
-    
+
     // 当月の合計を算出
     const [allTotal, setAllTotal] = useState(0);
     const calculateAllTotal = (data: DayWorkType[]) => {
@@ -364,7 +364,6 @@ const Index = () => {
         onRowSelectionChange: setRowSelection,
         manualPagination: true,
         getFilteredRowModel: getFilteredRowModel(),
-        
     });
 
     const collection = data?.collection;

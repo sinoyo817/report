@@ -17,9 +17,7 @@ const Search = () => {
         useFilterParams();
     const statusOptions = useStatusOptions({ forSearch: true });
 
-  
-      const { data: meta } = useMasterWorkCodeMeta();
-  
+    const { data: meta } = useMasterWorkCodeMeta();
 
     const { register, reset } = useFormContext<MasterWorkCodeFilterParamType>();
 
@@ -58,7 +56,7 @@ const Search = () => {
                             ))}
                 </Select>
             </BaseFieldWrapper>
-            <BaseFieldWrapper label="ステータス">
+            {/* <BaseFieldWrapper label="ステータス">
                 <Select placeholder="---" {...register("status")} w="72">
                     {statusOptions &&
                         statusOptions.map((item) => (
@@ -67,7 +65,7 @@ const Search = () => {
                             </option>
                         ))}
                 </Select>
-            </BaseFieldWrapper>
+            </BaseFieldWrapper> */}
         </BaseSearchForm>
     );
 };
