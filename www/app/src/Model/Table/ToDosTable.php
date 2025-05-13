@@ -51,6 +51,16 @@ class ToDosTable extends AppTable
             $this,
         ];
 
+        // 作成管理者
+        $this->belongsTo('CreateAdmins')
+            ->setClassName('Admins')
+            ->setForeignKey('created_by_admin');
+
+        // 更新管理者
+        $this->belongsTo('ModifiedAdmins')
+            ->setClassName('Admins')
+            ->setForeignKey('modified_by_admin');
+
         $this->addBehavior('Medii/TextSerialize.TextSerialize');
         $this->addBehavior('CommonAssociation', [
             'isAssociation' => [

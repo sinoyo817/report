@@ -12,6 +12,12 @@ use Medii\Crud\Interfaces\SearchInterface;
 use Medii\Crud\Interfaces\StatusInterface;
 use Medii\Crud\Interfaces\UpdateInterface;
 
+use App\Model\Entity\ToDo;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
+use Cake\Chronos\Chronos;
+use Cake\Mailer\MailerAwareTrait;
+
 /**
  * ToDos Controller
  *
@@ -19,6 +25,7 @@ use Medii\Crud\Interfaces\UpdateInterface;
  */
 class ToDosController extends AppController
 {
+    use MailerAwareTrait;
     protected $defaultTable = 'ToDos';
 
     public $paginate = [
@@ -38,8 +45,8 @@ class ToDosController extends AppController
      */
     public function index(SearchInterface $search)
     {
-        // $associated = [];
-        // $search->setfindOptions(['contain' => $associated]);
+        $associated = ['CreateAdmins', 'ModifiedAdmins'];
+        $search->setfindOptions(['contain' => $associated]);
         $this->set('data', $search->search($this));
     }
 
@@ -55,6 +62,12 @@ class ToDosController extends AppController
         $create->setPatchEntityOptions([
             'associated' => $associated
         ]);
+
+        $table = $this->fetchTable();
+        $table->getEventManager()->on('Model.afterSave', function (EventInterface $event, EntityInterface $entity) {
+            $admin = $this->fetchTable('Admins')->find()->where(['id' => $entity->created_by_admin])->firstOrFail();
+            $this->getMailer('ToDo')->send('sendToDo', [$entity, $admin]);
+        });
 
         $this->set('data', $create->save($this));
     }

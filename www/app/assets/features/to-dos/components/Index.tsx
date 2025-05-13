@@ -54,12 +54,12 @@ const Index = () => {
     });
 
     const { data: meta } = useToDoMeta();
-    
+
     const [isDnd, setIsDnd] = useBoolean();
 
     const [rowSelection, setRowSelection] = useState({});
 
-    const updateMutation = useUpdateToDo();    
+    const updateMutation = useUpdateToDo();
 
     const columnHelper = createColumnHelper<ToDoType>();
 
@@ -73,9 +73,8 @@ const Index = () => {
                     return info.getValue();
                 },
                 header: () => <span>ID</span>,
-                
             }) as ColumnDef<ToDoType>
-        );         
+        );
          commonColumn.push(
             columnHelper.accessor("title", {
                 id: "title",
@@ -89,16 +88,28 @@ const Index = () => {
                 header: () => <span>タイトル</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<ToDoType>
-        );   
+        );
         commonColumn.push(
             columnHelper.accessor("status", {
                 id: "status",
                 cell: (info) => {
-                    const data = info.getValue();                     
-
+                    const data = info.getValue();
                     return <StatusCell status={data} />;
                 },
                 header: () => <span>ステータス</span>,
+                // footer: (info) => info.column.id,
+            }) as ColumnDef<ToDoType>
+        );
+        commonColumn.push(
+            columnHelper.accessor("create_admin", {
+                id: "create_admin",
+                cell: (info) => {
+                    const data = info.getValue();
+                    if (data) {
+                        return <>{data.title}</>;
+                    }
+                },
+                header: () => <span>作成者</span>,
                 // footer: (info) => info.column.id,
             }) as ColumnDef<ToDoType>
         );
@@ -148,16 +159,13 @@ const Index = () => {
         getCoreRowModel: getCoreRowModel(),
         state: {
             rowSelection,
-            
         },
         onRowSelectionChange: setRowSelection,
         manualPagination: true,
         getFilteredRowModel: getFilteredRowModel(),
-        
     });
 
     const collection = data?.collection;
-    
     // const onDragEnd: OnDragEndResponder &
     //     React.DragEventHandler<HTMLTableElement> = async (result) => {
     //     if ("draggableId" in result) {
@@ -171,7 +179,7 @@ const Index = () => {
     //             });
     //         }
     //     }
-    // };    
+    // };
 
     return (
         <Box>

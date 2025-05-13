@@ -1,3 +1,4 @@
+import { AdminType } from "@/features/admins";
 import {
     BaseBlockEntityType,
     BaseEntityType,
@@ -5,7 +6,6 @@ import {
     IgnoreFormFieldsType,
     ResoponseCollectionType,
     MetadataType,
-    
     MetaUtilityType,
 } from "@/types";
 
@@ -19,9 +19,12 @@ export type ToDoType = {
     published: string;
     start_date: string;
     end_date: string;
-    
-    sequence: number;     
-      
+    sequence: number;
+
+    create_admin?: AdminType;
+    create_user?: AdminType;
+    modified_admin?: AdminType;
+    modified_user?: AdminType;
 } & BaseEntityType;
 
 export type ToDoListType = {
