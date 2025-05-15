@@ -100,6 +100,7 @@ const Form = (props: FormPropType) => {
             <Text color="gray" mb={4}>
                 ※ 日報記載用。工数の集計には影響しない。
             </Text>
+            <Time />
             <BaseBlockField<DayWorkFormValuesType>
                 id="blocks"
                 formType="block"
